@@ -270,7 +270,6 @@ export default {
           this.$root.toast("Registration", "User registered successfully", "success");
         }
         this.$router.push("/login");
-        // console.log(response);
       } catch (err) {
         console.log(err.response);
         this.form.submitError = err.response.data.message;
