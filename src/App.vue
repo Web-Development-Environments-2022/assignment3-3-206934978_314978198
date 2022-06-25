@@ -18,19 +18,19 @@
 </template>
 
 <script>
-export default {
-  name: "App",
-  methods: {
-    Logout() {
-      this.$root.store.logout();
-      this.$root.toast("Logout", "User logged out successfully", "success");
+  export default {
+    name: "App",
+    methods: {
+      Logout() {
+        this.$root.store.logout();
+        this.$root.toast("Logout", "User logged out successfully", "success");
 
-      this.$router.push("/").catch(() => {
-        this.$forceUpdate();
-      });
+        this.$router.push("/").catch(() => {
+          this.$forceUpdate();
+        });
+      }
     }
-  }
-};
+  };
 </script>
 
 <style lang="scss">
