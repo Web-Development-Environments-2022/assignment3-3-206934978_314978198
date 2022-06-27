@@ -22,17 +22,25 @@
         </div>
       </b-form-group>
     </b-form>
-    <RecipePreviewList title="Search Recipe"></RecipePreviewList>
+    <b-container>
+      <b-row>
+        <b-col v-for="r in this.results" :key="r.data">
+          <RecipePreview class="recipePreview" :recipe="r" />
+        </b-col>
+      </b-row>
+    </b-container>
+    <!-- <RecipePreview :recipe="results[0].data"></RecipePreview> -->
+    <!-- <RecipePreviewList title="Search"></RecipePreviewList> -->
   </div>
 </template>
 
 <script>
 import { BIconHandThumbsDown } from "bootstrap-vue";
-import RecipePreviewList from "../components/RecipePreviewList.vue";
+import RecipePreview from "../components/RecipePreview.vue";
 export default {
   name: "Search",
   components: {
-    RecipePreviewList,
+    RecipePreview,
   },
 
   data() {
@@ -43,33 +51,47 @@ export default {
       diet: "",
       intolerances: "",
       submitError: undefined,
+      results: this.$root.store.searchresults || undefined,
     };
   },
 
   methods: {
     async Search() {
       try {
-        console.log(this.query);
-        console.log(this.number);
         const response = await this.axios.get(
           // "https://test-for-3-2.herokuapp.com/user/Register",
-          this.$root.store.server_domain + "/recipes/search?searchQuery=" + this.query + "&number=" + this.number + "&cuisine=" + this.cuisine + "&diet=" + this.diet + "&intolerances=" + this.intolerances        
+          this.$root.store.server_domain +
+            "/recipes/search?searchQuery=" +
+            this.query +
+            "&number=" +
+            this.number +
+            "&cuisine=" +
+            this.cuisine +
+            "&diet=" +
+            this.diet +
+            "&intolerances=" +
+            this.intolerances
         );
-
-        console.log(response);
 
         const recipes_id = response.data;
         const recipes = [];
 
         for (let i = 0; i < this.number; i++) {
-          console.log(recipes_id[i]);
           recipes[i] = await this.axios.get(
             // "https://test-for-3-2.herokuapp.com/user/Register",
-            this.$root.store.server_domain + "/recipes/:recipeId?id=" + recipes_id[i]
+            this.$root.store.server_domain +
+              "/recipes/:recipeId?id=" +
+              recipes_id[i]
           );
         }
 
-        console.log(recipes);
+        for (let i = 0; i < this.number; i++) {
+          
+          this.results.push(recipes[i]);
+        }
+        
+        this.$root.store.searchresults = this.results;
+        
       } catch (err) {
         console.log(err.response);
         this.submitError = err.response.data.message;
