@@ -100,7 +100,7 @@ export default {
       diet: "",
       intolerances: "",
       submitError: undefined,
-      results: [],
+      results: [] || this.$root.store.lastSearch,
       numbers: [{ value: null, text: "", disabled: true }],
       cuisines: [{ value: null, text: "", disabled: true }],
       diets: [{ value: null, text: "", disabled: true }],
@@ -157,6 +157,8 @@ export default {
           }
           console.log(this.results);
 
+          this.$root.store.lastSearch = this.results;
+
         }
       } catch (err) {
         console.log(err.response);
@@ -174,9 +176,9 @@ export default {
       this.diet = "";
       this.cuisine = "";
       this.intolerances = "";
-      this.$nextTick(() => {
-        this.$v.$reset();
-      });
+      // this.$nextTick(() => {
+      //   this.$v.$reset();
+      // });
     }
   },
 };
