@@ -61,7 +61,73 @@
               Recipe's survings is required
             </b-form-invalid-feedback>
             <b-form-invalid-feedback v-if="$v.form.survings.alpha">
-              Survings's recipe can only contain numbers
+              Recipe's survings can only contain numbers
+            </b-form-invalid-feedback>
+          </b-form-group>
+
+          <b-form-group
+            label="Recipe's Time: "
+            label-for="readyInMinutes-input"
+          >
+            <b-form-input
+              id="readyInMinutes-input"
+              v-model="$v.form.readyInMinutes.$model"
+              type="number"
+              :state="validateState('readyInMinutes')"
+            ></b-form-input>
+            <b-form-invalid-feedback v-if="!$v.form.readyInMinutes.required">
+              Recipe's time is required
+            </b-form-invalid-feedback>
+            <b-form-invalid-feedback v-if="$v.form.readyInMinutes.alpha">
+              Recipe's time can only contain numbers
+            </b-form-invalid-feedback>
+          </b-form-group>
+
+          <b-form-group label="Vegan: " label-for="vegan-input">
+            <b-form-checkbox switch class="mr-n2 mb-n1">
+              <span class="sr-only"></span>
+            </b-form-checkbox>
+          </b-form-group>
+
+          <b-form-group label="Vegetarian: " label-for="vegetarian-input">
+            <b-form-checkbox switch class="mr-n2 mb-n1">
+              <span class="sr-only"></span>
+            </b-form-checkbox>
+          </b-form-group>
+
+          <b-form-group label="Gluten Free: " label-for="gluten_free-input">
+            <b-form-checkbox switch class="mr-n2 mb-n1">
+              <span class="sr-only"></span>
+            </b-form-checkbox>
+          </b-form-group>
+
+          <b-form-group
+            label="Recipe's Ingrediants: "
+            label-for="ingrediants-input"
+          >
+            <b-form-input
+              id="ingrediants-input"
+              v-model="$v.form.ingrediants.$model"
+              type="text"
+              :state="validateState('ingrediants')"
+            ></b-form-input>
+            <b-form-invalid-feedback v-if="!$v.form.ingrediants.required">
+              Recipe's ingrediants is required
+            </b-form-invalid-feedback>
+          </b-form-group>
+          <!-- <b-button v-b-modal.modal-prevent-closing >Add ingrediants</b-button> -->
+          <b-form-group
+            label="Recipe's Instractions: "
+            label-for="instractions-input"
+          >
+            <b-form-input
+              id="instractions-input"
+              v-model="$v.form.instractions.$model"
+              type="text"
+              :state="validateState('instractions')"
+            ></b-form-input>
+            <b-form-invalid-feedback v-if="!$v.form.instractions.required">
+              Recipe's instractions is required
             </b-form-invalid-feedback>
           </b-form-group>
         </b-form>
@@ -72,14 +138,7 @@
 </template>
 
 <script>
-import {
-  required,
-  minLength,
-  maxLength,
-  alpha,
-  sameAs,
-  email
-} from "vuelidate/lib/validators";
+import { required, alpha } from "vuelidate/lib/validators";
 
 export default {
   name: "App",
@@ -94,25 +153,36 @@ export default {
         vegan: "",
         vegetarian: "",
         gluten_free: "",
-        ingrediants: [],
+        ingrediants: "",
         instractions: "",
+        submitError: undefined
       },
     };
   },
 
   validations: {
     form: {
-      title:{
+      title: {
         required,
-        alpha
+        alpha,
       },
       image: {
-        required
+        required,
       },
       survings: {
         required,
-        alpha
-      }
+        alpha,
+      },
+      readyInMinutes: {
+        required,
+        alpha,
+      },
+      ingrediants: {
+        required
+      },
+      instractions: {
+        required
+      },
     },
   },
   methods: {
@@ -130,15 +200,27 @@ export default {
       return $dirty ? !$error : null;
     },
 
-    checkFormValidity() {
-      const valid = this.$refs.form.checkValidity();
-      this.nameState = valid;
-      return valid;
-    },
+    // checkFormValidity() {
+    //   const valid = this.$refs.form.checkValidity();
+    //   this.nameState = valid;
+    //   return valid;
+    // },
 
     resetModal() {
-      this.name = "";
-      this.nameState = null;
+      this.form = {
+        title: "",
+        image: "",
+        survings: "",
+        readyInMinutes: "",
+        vegan: "",
+        vegetarian: "",
+        gluten_free: "",
+        ingrediants: "",
+        instractions: "",
+      }
+      this.$nextTick(() => {
+        this.$v.$reset();
+      });
     },
 
     handleOk(bvModalEvent) {
@@ -148,14 +230,43 @@ export default {
       this.handleSubmit();
     },
 
+    async createNewRecipe(){
+      try{
+          const response = await this.axios.post(
+          // "https://test-for-3-2.herokuapp.com/user/Register",
+          this.$root.store.server_domain + "/user/myRecipies",
+
+          {
+            title: this.form.title,
+            imageUrl: this.form.image,
+            readyInMinutes: this.form.readyInMinutes,
+            vegan: this.form.vegan,
+            gluten_free: this.form.gluten_free,
+            ingredients: this.form.ingredients,
+            instructions: this.form.instructions,
+            servings: this.form.servings,
+            popularity: 0
+          }
+        );
+        if (response.status == 201) {
+          this.$root.toast("Create New Recipe", "New recipe added successfully", "success");
+        }
+      }
+      catch (err) {
+        console.log(err.response);
+        this.form.submitError = err.response.data.message;
+      }
+    },
+
     handleSubmit() {
       // Exit when the form isn't valid
-      if (!this.checkFormValidity()) {
-        return;
-      }
+      // if (!this.checkFormValidity()) {
+      //   return;
+      // }
       // Push the name to submitted names
-      this.submittedNames.push(this.name);
+      
       // Hide the modal manually
+      this.createNewRecipe();
       this.$nextTick(() => {
         this.$bvModal.hide("modal-prevent-closing");
       });
