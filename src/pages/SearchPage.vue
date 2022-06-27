@@ -81,13 +81,11 @@
 </template>
 
 <script>
-import { BIconHandThumbsDown } from "bootstrap-vue";
 import RecipePreview from "../components/RecipePreview.vue";
 import diets from "../assets/diet";
 import numbers from "../assets/numbers";
 import cuisines from "../assets/cuisines";
 import intoleranceses from "../assets/intoleranceses";
-import { runInThisContext } from "vm";
 export default {
   name: "Search",
   components: {
@@ -103,7 +101,6 @@ export default {
       intolerances: "",
       submitError: undefined,
       results: [],
-      // results: this.$root.store.searchresults || undefined,
       numbers: [{ value: null, text: "", disabled: true }],
       cuisines: [{ value: null, text: "", disabled: true }],
       diets: [{ value: null, text: "", disabled: true }],
