@@ -11,6 +11,8 @@ const router = new VueRouter({
   routes,
 });
 
+axios.defaults.withCredentials = true;
+
 import Vuelidate from "vuelidate";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -75,6 +77,11 @@ Vue.config.productionTip = false;
 const shared_data = {
   server_domain: state.server_domain,
   username: localStorage.username,
+  favoriteRecipes: localStorage.favoriteRecipes,
+  myRecipes: localStorage.myRecipes,
+  familyRecipes: localStorage.familyRecipes,
+  lastSearch: undefined,
+  
   login(username) {
     localStorage.setItem("username", username);
     this.username = username;
@@ -84,9 +91,10 @@ const shared_data = {
     console.log("logout");
     localStorage.removeItem("username");
     this.username = undefined;
+
   },
 };
-console.log(shared_data);
+
 // Vue.prototype.$root.store = shared_data;
 
 new Vue({

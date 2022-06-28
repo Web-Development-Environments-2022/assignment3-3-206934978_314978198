@@ -11,8 +11,8 @@
       </span>
       <span v-else>
         {{ $root.store.username }}: <button @click="Logout">Logout</button>|
+        <b-button v-b-modal.modal-prevent-closing>Add New Recipe</b-button>
       </span>
-      <b-button v-b-modal.modal-prevent-closing>Add New Recipe</b-button>
 
       <b-modal
         id="modal-prevent-closing"
@@ -50,18 +50,18 @@
             </b-form-invalid-feedback>
           </b-form-group>
 
-          <b-form-group label="Recipe's Survings: " label-for="survings-input">
+          <b-form-group label="Recipe's Servings: " label-for="servings-input">
             <b-form-input
-              id="survings-input"
-              v-model="$v.form.survings.$model"
+              id="servings-input"
+              v-model="$v.form.servings.$model"
               type="number"
-              :state="validateState('survings')"
+              :state="validateState('servings')"
             ></b-form-input>
-            <b-form-invalid-feedback v-if="!$v.form.survings.required">
-              Recipe's survings is required
+            <b-form-invalid-feedback v-if="!$v.form.servings.required">
+              Recipe's servings is required
             </b-form-invalid-feedback>
-            <b-form-invalid-feedback v-if="$v.form.survings.alpha">
-              Recipe's survings can only contain numbers
+            <b-form-invalid-feedback v-if="$v.form.servings.alpha">
+              Recipe's servings can only contain numbers
             </b-form-invalid-feedback>
           </b-form-group>
 
@@ -84,19 +84,19 @@
           </b-form-group>
 
           <b-form-group label="Vegan: " label-for="vegan-input">
-            <b-form-checkbox switch class="mr-n2 mb-n1">
+            <b-form-checkbox switch class="mr-n2 mb-n1" id="vegan-input">
               <span class="sr-only"></span>
             </b-form-checkbox>
           </b-form-group>
 
           <b-form-group label="Vegetarian: " label-for="vegetarian-input">
-            <b-form-checkbox switch class="mr-n2 mb-n1">
+            <b-form-checkbox switch class="mr-n2 mb-n1" id="vegetarian-input">
               <span class="sr-only"></span>
             </b-form-checkbox>
           </b-form-group>
 
           <b-form-group label="Gluten Free: " label-for="gluten_free-input">
-            <b-form-checkbox switch class="mr-n2 mb-n1">
+            <b-form-checkbox switch class="mr-n2 mb-n1" id="gluten-free-input">
               <span class="sr-only"></span>
             </b-form-checkbox>
           </b-form-group>
@@ -148,14 +148,14 @@ export default {
       form: {
         title: "",
         image: "",
-        survings: "",
+        servings: "",
         readyInMinutes: "",
-        vegan: "",
-        vegetarian: "",
-        gluten_free: "",
+        vegan: 0,
+        vegetarian: 0,
+        gluten_free: 0,
         ingrediants: "",
         instractions: "",
-        submitError: undefined
+        submitError: undefined,
       },
     };
   },
@@ -169,7 +169,7 @@ export default {
       image: {
         required,
       },
-      survings: {
+      servings: {
         required,
         alpha,
       },
@@ -178,21 +178,30 @@ export default {
         alpha,
       },
       ingrediants: {
-        required
+        required,
       },
       instractions: {
-        required
+        required,
       },
     },
   },
   methods: {
-    Logout() {
-      this.$root.store.logout();
-      this.$root.toast("Logout", "User logged out successfully", "success");
+    async Logout() {
+      try {
+        const response = await this.axios.post(
+          this.$root.store.server_domain + "/Logout",
+        );
 
-      this.$router.push("/").catch(() => {
+        this.$root.store.logout();
+        this.$root.toast("Logout", "User logged out successfully", "success");
+        this.$router.push("/").catch(() => {
         this.$forceUpdate();
       });
+      } catch (err) {
+        console.log(err.response);
+        this.form.submitError = err.response.data.message;
+      }
+      
     },
 
     validateState(param) {
@@ -210,14 +219,14 @@ export default {
       this.form = {
         title: "",
         image: "",
-        survings: "",
+        servings: "",
         readyInMinutes: "",
-        vegan: "",
-        vegetarian: "",
-        gluten_free: "",
+        vegan: 0,
+        vegetarian: 0,
+        gluten_free: 0,
         ingrediants: "",
         instractions: "",
-      }
+      };
       this.$nextTick(() => {
         this.$v.$reset();
       });
@@ -230,29 +239,32 @@ export default {
       this.handleSubmit();
     },
 
-    async createNewRecipe(){
-      try{
-          const response = await this.axios.post(
-          // "https://test-for-3-2.herokuapp.com/user/Register",
+    async createNewRecipe() {
+      try {
+        console.log(this.$root.store.server_domain);
+        const response = await this.axios.post(
           this.$root.store.server_domain + "/user/myRecipies",
-
           {
             title: this.form.title,
             imageUrl: this.form.image,
             readyInMinutes: this.form.readyInMinutes,
             vegan: this.form.vegan,
+            vegetarian: this.form.vegetarian,
             gluten_free: this.form.gluten_free,
             ingredients: this.form.ingredients,
             instructions: this.form.instructions,
             servings: this.form.servings,
-            popularity: 0
+            popularity: 0,
           }
         );
         if (response.status == 201) {
-          this.$root.toast("Create New Recipe", "New recipe added successfully", "success");
+          this.$root.toast(
+            "Create New Recipe",
+            "New recipe added successfully",
+            "success"
+          );
         }
-      }
-      catch (err) {
+      } catch (err) {
         console.log(err.response);
         this.form.submitError = err.response.data.message;
       }
@@ -264,15 +276,34 @@ export default {
       //   return;
       // }
       // Push the name to submitted names
-      
+
       // Hide the modal manually
       this.createNewRecipe();
       this.$nextTick(() => {
         this.$bvModal.hide("modal-prevent-closing");
       });
     },
+
+    // onSwitch() {
+    //   console.log("here");
+    //   if (this.$v.form.gluten_free === "0"){
+    //     this.gluten_free = "1";
+    //   }
+    //   else{
+    //     this.gluten_free = "0";
+    //   }
+        
+    // }
+    
   },
 };
+// $(function() {
+//       $('#gluten-free-input').bootstrapToggle({
+//         on: this.form.gluten_free = 1,
+//         off: this.form.gluten_free = 0
+//       });
+//     })
+
 </script>
 
 <style lang="scss">
