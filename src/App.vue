@@ -53,15 +53,13 @@
           <b-form-group label="Recipe's Servings: " label-for="servings-input">
             <b-form-input
               id="servings-input"
-              v-model="$v.form.servings.$model"
+              v-model="$v.form.servings"
               type="number"
+              min="1"
               :state="validateState('servings')"
             ></b-form-input>
             <b-form-invalid-feedback v-if="!$v.form.servings.required">
               Recipe's servings is required
-            </b-form-invalid-feedback>
-            <b-form-invalid-feedback v-if="$v.form.servings.alpha">
-              Recipe's servings can only contain numbers
             </b-form-invalid-feedback>
           </b-form-group>
 
@@ -73,63 +71,115 @@
               id="readyInMinutes-input"
               v-model="$v.form.readyInMinutes.$model"
               type="number"
+              min="1"
               :state="validateState('readyInMinutes')"
             ></b-form-input>
             <b-form-invalid-feedback v-if="!$v.form.readyInMinutes.required">
               Recipe's time is required
             </b-form-invalid-feedback>
-            <b-form-invalid-feedback v-if="$v.form.readyInMinutes.alpha">
-              Recipe's time can only contain numbers
-            </b-form-invalid-feedback>
           </b-form-group>
 
           <b-form-group label="Vegan: " label-for="vegan-input">
-            <b-form-checkbox switch class="mr-n2 mb-n1" id="vegan-input">
+            <b-form-checkbox
+              switch
+              class="mr-n2 mb-n1"
+              id="vegan-input"
+              v-model="$v.form.vegan"
+            >
               <span class="sr-only"></span>
             </b-form-checkbox>
           </b-form-group>
 
           <b-form-group label="Vegetarian: " label-for="vegetarian-input">
-            <b-form-checkbox switch class="mr-n2 mb-n1" id="vegetarian-input">
+            <b-form-checkbox
+              switch
+              class="mr-n2 mb-n1"
+              id="vegetarian-input"
+              v-model="$v.form.vegetarian"
+            >
               <span class="sr-only"></span>
             </b-form-checkbox>
           </b-form-group>
 
           <b-form-group label="Gluten Free: " label-for="gluten_free-input">
-            <b-form-checkbox switch class="mr-n2 mb-n1" id="gluten-free-input">
+            <b-form-checkbox
+              switch
+              class="mr-n2 mb-n1"
+              id="gluten-free-input"
+              v-model="$v.form.gluten_free"
+            >
               <span class="sr-only"></span>
             </b-form-checkbox>
           </b-form-group>
 
           <b-form-group
-            label="Recipe's Ingrediants: "
-            label-for="ingrediants-input"
+            :state="Boolean(form.ingrediants)"
+            v-for="ingrediant in form.ingrediants"
+            :key="ingrediant.value"
+            invalid-feedback="*"
           >
             <b-form-input
-              id="ingrediants-input"
-              v-model="$v.form.ingrediants.$model"
+              v-model="ingrediant.value"
+              required
               type="text"
-              :state="validateState('ingrediants')"
             ></b-form-input>
-            <b-form-invalid-feedback v-if="!$v.form.ingrediants.required">
-              Recipe's ingrediants is required
-            </b-form-invalid-feedback>
           </b-form-group>
-          <!-- <b-button v-b-modal.modal-prevent-closing >Add ingrediants</b-button> -->
-          <b-form-group
+
+          <!-- <b-button-group>
+            <b-button
+              type="button"
+              variant="outline-info"
+              class="mb-2"
+              @click="addInstruction"
+            >
+              <b-icon icon="plus-lg" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button
+              type="button"
+              variant="outline-info"
+              class="mb-2"
+              @click="removeInstruction"
+            >
+              <b-icon icon="dash-lg" aria-hidden="true"></b-icon>
+            </b-button>
+          </b-button-group> -->
+
+          <!-- <b-form-group
             label="Recipe's Instractions: "
             label-for="instractions-input"
+            v-for="instruc in form.instractions"
+            :key="instruc.value"
+            invalid-feedback="*"
           >
             <b-form-input
               id="instractions-input"
-              v-model="$v.form.instractions.$model"
+              v-model="instruc.value"
               type="text"
               :state="validateState('instractions')"
             ></b-form-input>
-            <b-form-invalid-feedback v-if="!$v.form.instractions.required">
+            <b-form-invalid-feedback v-if="!instruc.value.required">
               Recipe's instractions is required
             </b-form-invalid-feedback>
-          </b-form-group>
+          </b-form-group> -->
+          <!-- 
+          <b-button-group>
+            <b-button
+              type="button"
+              variant="outline-info"
+              class="mb-2"
+              @click="addInstruction"
+            >
+              <b-icon icon="plus-lg" aria-hidden="true"></b-icon>
+            </b-button>
+            <b-button
+              type="button"
+              variant="outline-info"
+              class="mb-2"
+              @click="removeInstruction"
+            >
+              <b-icon icon="dash-lg" aria-hidden="true"></b-icon>
+            </b-button>
+          </b-button-group> -->
         </b-form>
       </b-modal>
     </div>
@@ -153,10 +203,12 @@ export default {
         vegan: 0,
         vegetarian: 0,
         gluten_free: 0,
-        ingrediants: "",
-        instractions: "",
+        ingrediants: [{ key: 0, value: undefined }],
+        instractions: [{ key: 0, value: undefined }],
         submitError: undefined,
       },
+      ingrediantsCounter: 1,
+      instructionsCounter: 1,
     };
   },
 
@@ -177,31 +229,32 @@ export default {
         required,
         alpha,
       },
-      ingrediants: {
-        required,
-      },
-      instractions: {
-        required,
-      },
+      // ingrediants: {
+      //   required,
+      // },
+      // instractions: {
+      //   required,
+      // },
     },
   },
   methods: {
     async Logout() {
       try {
         const response = await this.axios.post(
-          this.$root.store.server_domain + "/Logout",
+          this.$root.store.server_domain + "/Logout"
         );
 
         this.$root.store.logout();
-        this.$root.toast("Logout", "User logged out successfully", "success");
-        this.$router.push("/").catch(() => {
-        this.$forceUpdate();
-      });
+        if (response.message == "logout succeeded") {
+          this.$root.toast("Logout", "User logged out successfully", "success");
+          this.$router.push("/").catch(() => {
+            this.$forceUpdate();
+          });
+        }
       } catch (err) {
         console.log(err.response);
         this.form.submitError = err.response.data.message;
       }
-      
     },
 
     validateState(param) {
@@ -236,12 +289,15 @@ export default {
       // Prevent modal from closing
       bvModalEvent.preventDefault();
       // Trigger submit handler
+      this.$v.form.$touch();
+      if (this.$v.form.$anyError) {
+        return;
+      }
       this.handleSubmit();
     },
 
     async createNewRecipe() {
       try {
-        console.log(this.$root.store.server_domain);
         const response = await this.axios.post(
           this.$root.store.server_domain + "/user/myRecipies",
           {
@@ -284,26 +340,39 @@ export default {
       });
     },
 
-    // onSwitch() {
-    //   console.log("here");
-    //   if (this.$v.form.gluten_free === "0"){
-    //     this.gluten_free = "1";
-    //   }
-    //   else{
-    //     this.gluten_free = "0";
-    //   }
-        
-    // }
-    
+    addIngredient() {
+      this.ingrediantsCounter += 1;
+
+      this.form.ingrediants.push({
+        key: this.ingrediantsCounter,
+        value: undefined,
+      });
+    },
+
+    addInstruction() {
+      this.instructionsCounter += 1;
+
+      this.form.instractions.push({
+        key: this.instructionsCounter,
+        value: undefined,
+      });
+    },
+
+    removeIngredient() {
+      if (this.ingrediantsCounter > 1) {
+        this.ingrediantsCounter -= 1;
+      }
+      this.form.ingrediants.pop();
+    },
+
+    removeInstruction() {
+      if (this.instructionsCounter > 1) {
+        this.instructionsCounter -= 1;
+      }
+      this.form.instractions.pop();
+    },
   },
 };
-// $(function() {
-//       $('#gluten-free-input').bootstrapToggle({
-//         on: this.form.gluten_free = 1,
-//         off: this.form.gluten_free = 0
-//       });
-//     })
-
 </script>
 
 <style lang="scss">

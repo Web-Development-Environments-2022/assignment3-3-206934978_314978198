@@ -4,6 +4,11 @@
       <div class="recipe-header mt-3 mb-4">
         <h1>{{ recipe.title }}</h1>
         <img :src="recipe.imageUrl" class="center" />
+        <span v-if="$root.store.username">
+        <b-button @click="addToFavorite">
+          <b-icon-star></b-icon-star>
+        </b-button>
+        </span>
       </div>
       <div class="recipe-body">
         <div class="wrapper">
@@ -11,13 +16,13 @@
             <div class="mb-3">
               <div>Ready in {{ recipe.readyInMinutes }} minutes</div>
               <div>Likes: {{ recipe.popularity }} likes</div>
-              <div>Servings: {{ recipe.servings }} </div>
-              <div v-if="recipe.vegan">Vegan: Yes </div>
-              <div v-else-if="!recipe.vegan">Vegan: No </div>
-              <div v-if="recipe.vegetarian">Vegetarian: Yes </div>
-              <div v-else-if="!recipe.vegetarian">Vegetarian: No </div>
-              <div v-if="recipe.gluten_free">Gluten Free: Yes </div>
-              <div v-else-if="!recipe.gluten_free">Gluten Free: No </div>
+              <div>Servings: {{ recipe.servings }}</div>
+              <div v-if="recipe.vegan">Vegan: Yes</div>
+              <div v-else-if="!recipe.vegan">Vegan: No</div>
+              <div v-if="recipe.vegetarian">Vegetarian: Yes</div>
+              <div v-else-if="!recipe.vegetarian">Vegetarian: No</div>
+              <div v-if="recipe.gluten_free">Gluten Free: Yes</div>
+              <div v-else-if="!recipe.gluten_free">Gluten Free: No</div>
             </div>
             Ingredients:
             <ul>
@@ -52,7 +57,7 @@
 export default {
   data() {
     return {
-      recipe: null
+      recipe: null,
     };
   },
   async created() {
@@ -63,7 +68,10 @@ export default {
       try {
         response = await this.axios.get(
           // "https://test-for-3-2.herokuapp.com/recipes/info",
-          this.$root.store.server_domain + "/recipes/fullDetailes?recipeid=" + this.$route.params.recipeId);
+          this.$root.store.server_domain +
+            "/recipes/fullDetailes?recipeid=" +
+            this.$route.params.recipeId
+        );
 
         // console.log("response.status", response.status);
         if (response.status !== 200) this.$router.replace("/NotFound");
@@ -86,7 +94,7 @@ export default {
         servings,
         vegan,
         vegetarian,
-        gluten_free
+        gluten_free,
       } = response.data;
 
       console.log(analyze_Instructions);
@@ -97,7 +105,7 @@ export default {
           return fstep.steps;
         })
         .reduce((a, b) => [...a, ...b], []);
-      
+
       let _recipe = {
         instructions,
         _instructions,
@@ -110,13 +118,27 @@ export default {
         servings,
         vegan,
         vegetarian,
-        gluten_free
+        gluten_free,
       };
 
       this.recipe = _recipe;
     } catch (error) {
       console.log(error);
     }
+  },
+
+  async addToFavorite(){
+    try {
+        const response = await this.axios.post(
+          this.$root.store.server_domain + "/user/favorites",
+          {
+            rec_id: this.$route.params.recipeId
+          }
+        );
+      } catch (err) {
+        console.log(err.response);
+        this.form.submitError = err.response.data.message;
+      }
   }
 };
 </script>
