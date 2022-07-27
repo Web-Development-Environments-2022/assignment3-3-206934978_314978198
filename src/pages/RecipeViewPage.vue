@@ -4,11 +4,19 @@
       <div class="recipe-header mt-3 mb-4">
         <h1>{{ recipe.title }}</h1>
         <img :src="recipe.imageUrl" class="center" />
+        
         <span v-if="$root.store.username">
-        <b-button @click="addToFavorite">
-          <b-icon-star></b-icon-star>
-        </b-button>
-        </span>
+          <span v-if="!this.favorite">
+            <b-button @click="addToFavorite" variant="outline-dark">
+              <b-icon-star></b-icon-star>
+            </b-button>
+          </span>
+          <span v-else>
+            <b-button @click="addToFavorite" variant="outline-success" disabled="false">
+              <b-icon-star></b-icon-star>
+            </b-button>
+          </span>
+        </span>        
       </div>
       <div class="recipe-body">
         <div class="wrapper">
@@ -37,7 +45,7 @@
           <div class="wrapped">
             Instructions:
             <ol>
-              <li v-for="s in recipe.analyze_Instructions" :key="s.number">
+              <li v-for="s in recipe._instructions" :key="s.number">
                 {{ s.step }}
               </li>
             </ol>
@@ -58,6 +66,7 @@ export default {
   data() {
     return {
       recipe: null,
+      favorite: false,
     };
   },
   async created() {
@@ -70,7 +79,8 @@ export default {
           // "https://test-for-3-2.herokuapp.com/recipes/info",
           this.$root.store.server_domain +
             "/recipes/fullDetailes?recipeid=" +
-            this.$route.params.recipeId
+            this.$route.params.recipeId,
+            { withCredentials: true }
         );
 
         // console.log("response.status", response.status);
@@ -122,24 +132,52 @@ export default {
       };
 
       this.recipe = _recipe;
+      this.checkIfFavorite();
     } catch (error) {
       console.log(error);
     }
   },
+  methods:{
+    async addToFavorite(){
+      const recipe = {recipeId: this.$route.params.recipeId};
+      let response;
 
-  async addToFavorite(){
-    try {
-        const response = await this.axios.post(
+      try {
+         response = await this.axios.post(
           this.$root.store.server_domain + "/user/favorites",
           {
-            rec_id: this.$route.params.recipeId
+            rec_id: recipe.recipeId,
+            withCredentials: true  
           }
         );
+        this.favorite = true;
       } catch (err) {
         console.log(err.response);
         this.form.submitError = err.response.data.message;
       }
+    },
+
+    async checkIfFavorite(){
+      const recipe = {recipeId: this.$route.params.recipeId};
+      let response;
+
+      try{
+        response = await this.axios.get(
+          this.$root.store.server_domain + "/user/isAFavorites?recipeId=" + recipe.recipeId,
+          { withCredentials: true }
+        );
+
+        if(response.data == true)
+          this.favorite = true;
+        
+        console.log(reaponse);
+      } catch (err) {
+        console.log(err.response);
+        // this.form.submitError = err.response.data.message;
+      }
+    }
   }
+  
 };
 </script>
 

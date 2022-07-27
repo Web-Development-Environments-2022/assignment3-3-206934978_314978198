@@ -68,7 +68,7 @@
       </b-form-group>
       <b-button type="reset">Reset</b-button>
     </b-form>
-    <b-container>
+    <b-container v-if="searched > 0">
       <b-row>
         <b-col v-for="r in this.results" :key="r.id">
           <RecipePreview class="recipePreview" :recipe="r" />
@@ -94,6 +94,7 @@ export default {
 
   data() {
     return {
+      searched: 0,
       query: "",
       number: 5,
       cuisine: "",
@@ -157,6 +158,8 @@ export default {
           }
           console.log(this.results);
 
+          console.log(this.searched);
+
           this.$root.store.lastSearch = this.results;
 
         }
@@ -167,6 +170,7 @@ export default {
     },
 
     onSearch() {
+      this.searched += 1;
       this.Search();
     },
 
