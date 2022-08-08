@@ -32,6 +32,11 @@ const routes = [
     name: "myrecipes",
     component: () => import("./pages/MyRecipesPage"),
   },
+  // {
+  //   path: "/newrecipe",
+  //   name: "newrecipe",
+  //   component: () => import("./components/NewRecipeModal"),
+  // },
   {
     path: "*",
     name: "notFound",

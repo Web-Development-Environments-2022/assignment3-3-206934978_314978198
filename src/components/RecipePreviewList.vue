@@ -6,7 +6,7 @@
     </h3>
     <b-row>
       <b-col v-for="r in recipes" :key="r.id">
-        <RecipePreview class="recipePreview" :recipe="r" />
+        <RecipePreview class="recipePreview" :recipe="r" :log_in="log_in"  />
       </b-col>
     </b-row>
   </b-container>
@@ -23,6 +23,11 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    log_in: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {

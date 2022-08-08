@@ -29,8 +29,8 @@
               <div v-else-if="!recipe.vegan">Vegan: No</div>
               <div v-if="recipe.vegetarian">Vegetarian: Yes</div>
               <div v-else-if="!recipe.vegetarian">Vegetarian: No</div>
-              <div v-if="recipe.gluten_free">Gluten Free: Yes</div>
-              <div v-else-if="!recipe.gluten_free">Gluten Free: No</div>
+              <div v-if="recipe.gluteFree">Gluten Free: Yes</div>
+              <div v-else-if="!recipe.glutenFree">Gluten Free: No</div>
             </div>
             Ingredients:
             <ul>
@@ -104,7 +104,7 @@ export default {
         servings,
         vegan,
         vegetarian,
-        gluten_free,
+        glutenFree,
       } = response.data;
 
       console.log(analyze_Instructions);
@@ -128,7 +128,7 @@ export default {
         servings,
         vegan,
         vegetarian,
-        gluten_free,
+        glutenFree,
       };
 
       this.recipe = _recipe;

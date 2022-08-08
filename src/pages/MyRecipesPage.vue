@@ -13,7 +13,7 @@
 
 
 <script>
-import { RecipePreview } from "../components/RecipePreview";
+import { RecipePreview } from "../components/RecipePreview.vue";
 
 export default{
     name: "MyRecipes",

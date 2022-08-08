@@ -11,9 +11,11 @@
       </span>
       <span v-else>
         <router-link :to="{ name: 'myrecipes' }">My Recipes</router-link>|
+        <NewRecipeModal></NewRecipeModal>| 
         {{ $root.store.username }}: <button @click="Logout">Logout</button>|
         <!-- <b-button v-b-modal.modal-prevent-closing>Add New Recipe</b-button> -->
-        <NewRecipeModal></NewRecipeModal>
+        <!-- <b-button v-b-modal.modal-prevent-closing>Add
+        </b-button> -->
       </span>
     </div>
     <router-view />
@@ -21,30 +23,30 @@
 </template>
 
 <script>
-import NewRecipeModal from './components/NewRecipeModal.vue';
-
+import NewRecipeModal from "./components/NewRecipeModal";
 
 export default {
-    name: "App",
-    methods: {
-        async Logout() {
-            try {
-                const response = await this.axios.post(this.$root.store.server_domain + "/Logout");
-                this.$root.store.logout();
-                if (response.message == "logout succeeded") {
-                    this.$root.toast("Logout", "User logged out successfully", "success");
-                    this.$router.push("/").catch(() => {
-                        this.$forceUpdate();
-                    });
-                }
-            }
-            catch (err) {
-                console.log(err.response);
-                this.form.submitError = err.response.data.message;
-            }
-        },
+  name: "App",
+  components: { NewRecipeModal },
+  methods: {
+    async Logout() {
+      try {
+        const response = await this.axios.post(
+          this.$root.store.server_domain + "/Logout"
+        );
+        this.$root.store.logout();
+        if (response.message == "logout succeeded") {
+          this.$root.toast("Logout", "User logged out successfully", "success");
+          this.$router.push("/").catch(() => {
+            this.$forceUpdate();
+          });
+        }
+      } catch (err) {
+        console.log(err.response);
+        this.form.submitError = err.response.data.message;
+      }
     },
-    components: { NewRecipeModal }
+  },
 };
 </script>
 
