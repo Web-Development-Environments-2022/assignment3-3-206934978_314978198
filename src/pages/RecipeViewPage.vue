@@ -3,8 +3,8 @@
     <div v-if="recipe">
       <div class="recipe-header mt-3 mb-4">
         <h1>{{ recipe.title }}</h1>
-        <img :src="recipe.imageUrl" class="center" />
-        
+        <img :src="recipe.image" class="center" />
+
         <span v-if="$root.store.username">
           <span v-if="!this.favorite">
             <b-button @click="addToFavorite" variant="outline-dark">
@@ -12,25 +12,47 @@
             </b-button>
           </span>
           <span v-else>
-            <b-button @click="addToFavorite" variant="outline-success" disabled="false">
+            <b-button
+              @click="addToFavorite"
+              variant="outline-success"
+              disabled="false"
+            >
               <b-icon-star></b-icon-star>
             </b-button>
           </span>
-        </span>        
+        </span>
       </div>
       <div class="recipe-body">
         <div class="wrapper">
           <div class="wrapped">
             <div class="mb-3">
               <div>Ready in {{ recipe.readyInMinutes }} minutes</div>
-              <div>Likes: {{ recipe.popularity }} likes</div>
+              <div>Likes: {{ recipe.aggregateLikes }} likes</div>
               <div>Servings: {{ recipe.servings }}</div>
-              <div v-if="recipe.vegan">Vegan: Yes</div>
-              <div v-else-if="!recipe.vegan">Vegan: No</div>
-              <div v-if="recipe.vegetarian">Vegetarian: Yes</div>
-              <div v-else-if="!recipe.vegetarian">Vegetarian: No</div>
-              <div v-if="recipe.gluteFree">Gluten Free: Yes</div>
-              <div v-else-if="!recipe.glutenFree">Gluten Free: No</div>
+              <div v-if="recipe.vegan">
+                <b-avatar
+                  variant="tranparent"
+                  :src="require('@/assets/vegan.png')"
+                  style="width: 2.5em; height: 3.3em"
+                >
+                </b-avatar>
+              </div>
+              <div v-if="recipe.vegetarian">
+                <b-avatar
+                  variant="tranparent"
+                  :src="require('@/assets/vegetarian.png')"
+                  style="width: 4.5em; height: 3em"
+                >
+                </b-avatar>
+              </div>
+              <div v-if="recipe.gluteFree">
+                <b-avatar
+                  variant="tranparent"
+                  :src="require('@/assets/gluten_free.png')"
+                  style="width: 3.8em; height: 3em"
+                >
+                </b-avatar>
+              </div>
             </div>
             Ingredients:
             <ul>
@@ -80,7 +102,7 @@ export default {
           this.$root.store.server_domain +
             "/recipes/fullDetailes?recipeid=" +
             this.$route.params.recipeId,
-            { withCredentials: true }
+          { withCredentials: true }
         );
 
         // console.log("response.status", response.status);
@@ -97,9 +119,9 @@ export default {
         analyze_Instructions,
         instructions,
         ingredients,
-        popularity,
+        aggregateLikes,
         readyInMinutes,
-        imageUrl,
+        image,
         title,
         servings,
         vegan,
@@ -121,9 +143,9 @@ export default {
         _instructions,
         analyze_Instructions,
         ingredients,
-        popularity,
+        aggregateLikes,
         readyInMinutes,
-        imageUrl,
+        image,
         title,
         servings,
         vegan,
@@ -137,17 +159,17 @@ export default {
       console.log(error);
     }
   },
-  methods:{
-    async addToFavorite(){
-      const recipe = {recipeId: this.$route.params.recipeId};
+  methods: {
+    async addToFavorite() {
+      const recipe = { recipeId: this.$route.params.recipeId };
       let response;
 
       try {
-         response = await this.axios.post(
+        response = await this.axios.post(
           this.$root.store.server_domain + "/user/favorites",
           {
             rec_id: recipe.recipeId,
-            withCredentials: true  
+            withCredentials: true,
           }
         );
         this.favorite = true;
@@ -157,27 +179,29 @@ export default {
       }
     },
 
-    async checkIfFavorite(){
-      const recipe = {recipeId: this.$route.params.recipeId};
+    async checkIfFavorite() {
+      const recipe = { recipeId: this.$route.params.recipeId };
       let response;
 
-      try{
+      try {
         response = await this.axios.get(
-          this.$root.store.server_domain + "/user/isAFavorites?recipeId=" + recipe.recipeId,
+          this.$root.store.server_domain +
+            "/user/isAFavorites?recipeId=" +
+            recipe.recipeId,
           { withCredentials: true }
         );
 
-        if(response.data == true)
-          this.favorite = true;
+        if (response != undefined){
+          if (response.data == true) this.favorite = true;
+        }
         
         console.log(reaponse);
       } catch (err) {
         console.log(err.response);
         // this.form.submitError = err.response.data.message;
       }
-    }
-  }
-  
+    },
+  },
 };
 </script>
 

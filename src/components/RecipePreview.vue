@@ -4,7 +4,7 @@
       <router-link
         :to="{
           name: 'recipe',
-          params: { recipeId: recipe.id, user_recipe: user_recipe },
+          params: { recipeId: recipe.id },
         }"
         class="recipe-preview"
       >
@@ -103,10 +103,6 @@ export default {
     recipe: {
       type: Object,
       required: true,
-    },
-    user_recipe: {
-      type: Boolean,
-      default: false,
     },
     log_in: {
       type: Boolean,

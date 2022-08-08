@@ -5,9 +5,9 @@
       <slot></slot>
     </h3>
     <b-row>
-      <b-col v-for="r in recipes" :key="r.id">
-        <RecipePreview class="recipePreview" :recipe="r" :log_in="log_in"  />
-      </b-col>
+      <b-row v-for="r in recipes" :key="r.id">
+        <RecipePreview class="recipePreview" :recipe="r" :log_in="log_in" />
+      </b-row>
     </b-row>
   </b-container>
 </template>
@@ -17,22 +17,22 @@ import RecipePreview from "./RecipePreview.vue";
 export default {
   name: "RecipePreviewList",
   components: {
-    RecipePreview
+    RecipePreview,
   },
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     log_in: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      recipes: []
+      recipes: [],
     };
   },
   mounted() {
@@ -41,8 +41,20 @@ export default {
   methods: {
     async updateRecipes() {
       try {
+        if (this.title == "Explore This Recipes") {
+          await this.randomRecipes();
+        } else if (this.title == "Last Viewed Recipes") {
+          await this.lastViewedRecipes();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async randomRecipes() {
+      try {
         const response = await this.axios.get(
-          this.$root.store.server_domain + "/recipes/random",
+          this.$root.store.server_domain + "/recipes/random"
           // "https://test-for-3-2.herokuapp.com/recipes/random"
         );
 
@@ -53,8 +65,28 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    }
-  }
+    },
+
+    async lastViewedRecipes() {
+      try {
+        let response;
+        let returned_recipes = [];
+
+        console.log(this.$root.store.server_domain + "/recipes/watched");
+
+        response = await this.axios.get(
+          this.$root.store.server_domain + "/recipes/watched",
+          { withCredentials: true }
+        );
+
+        returned_recipes = response.data;
+        this.recipes = [];
+        this.recipes.push(...returned_recipes);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
 };
 </script>
 

@@ -1,62 +1,80 @@
 <template>
-  <div class="container" @submit.prevent="onRandonRecipes">
+  <!-- @submit.prevent="onRandonRecipes" -->
+  <div class="container">
     <h1 class="title">Main Page</h1>
-    <div id="rightRecipes">
+    <div class="right-div">
       <RecipePreviewList
         title="Explore This Recipes"
+        :log_in="Boolean($root.store.username)"
         class="RandomRecipes center"
       />
+      <!-- <button type="submit" class="btn btn-dark" @click="onRandomRecipes">
+        More Recipes
+      </button> -->
     </div>
 
-    <div id="leftRecipes">
+    <div class="left-div">
       <RecipePreviewList
         v-if="$root.store.username"
         title="Last Viewed Recipes"
-        :log_in = "Boolean($root.store.username)"
+        :log_in="Boolean($root.store.username)"
         :class="{
           RandomRecipes: true,
-          blur: !$root.store.username,
           center: true,
         }"
         disabled
       ></RecipePreviewList>
+      <LogInMainPage v-else></LogInMainPage>
     </div>
-
-    <!-- <button type="submit" class="btn btn-dark">More Recipes</button>
-    <router-link v-if="!$root.store.username" to="/login" tag="button"
-      >You need to Login to vue this</router-link
-    > -->
-    <!-- {{ !$root.store.username }} -->
 
     <div
-      style="position: absolute;top: 70%;left: 50%;transform: translate(-50%, -50%);"
-    >
-    </div>
+      style="
+        position: absolute;
+        top: 70%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      "
+    ></div>
   </div>
 </template>
 
 <script>
 import RecipePreviewList from "../components/RecipePreviewList.vue";
+import LogInMainPage from "../components/LogInMainPage.vue";
 export default {
   components: {
     RecipePreviewList,
+    LogInMainPage,
+  },
+  data() {
+    return {
+      rerandom: false,
+    };
   },
 
-  // methods: {
-  //   onRandonRecipes() {},
-  // },
+  methods: {
+    onRandonRecipes() {
+      if (this.rerandom) {
+        this.rerandom = false;
+      } else {
+        this.rerandom = true;
+      }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.conteiner {
-  display: inline;
+// .conteiner {
+//   display: inline;
+// }
+
+.right-div {
+  float: right;
 }
-#rightRecipes{
-  float: right,
-}
-#leftRecipes{
-  float: left,
+
+.left-div {
+  float: left;
 }
 .RandomRecipes {
   margin: 10px 0 10px;
