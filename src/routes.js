@@ -32,11 +32,11 @@ const routes = [
     name: "myrecipes",
     component: () => import("./pages/MyRecipesPage"),
   },
-  // {
-  //   path: "/newrecipe",
-  //   name: "newrecipe",
-  //   component: () => import("./components/NewRecipeModal"),
-  // },
+  {
+    path: "/myfavoriterecipes",
+    name: "myfavoriterecipes",
+    component: () => import("./pages/MyFavoritesRecipes"),
+  },
   {
     path: "*",
     name: "notFound",

@@ -4,6 +4,9 @@
       <div class="recipe-header mt-3 mb-4">
         <h1>{{ recipe.title }}</h1>
         <img :src="recipe.image" class="center" />
+        <br>
+        <br>
+        <br>
 
         <span v-if="$root.store.username">
           <span v-if="!this.favorite">
@@ -95,15 +98,26 @@ export default {
     try {
       let response;
       // response = this.$route.params.response;
+      console.log(this.$route.params.title);
 
       try {
-        response = await this.axios.get(
-          // "https://test-for-3-2.herokuapp.com/recipes/info",
-          this.$root.store.server_domain +
-            "/recipes/fullDetailes?recipeid=" +
-            this.$route.params.recipeId,
-          { withCredentials: true }
-        );
+        if (this.$route.params.title == "My Recipes") {
+          response = await this.axios.get(
+            // "https://test-for-3-2.herokuapp.com/recipes/info",
+            this.$root.store.server_domain +
+              "/recipes/myFullDetailes?recipeid=" +
+              this.$route.params.recipeId,
+            { withCredentials: true }
+          );
+        } else {
+          response = await this.axios.get(
+            // "https://test-for-3-2.herokuapp.com/recipes/info",
+            this.$root.store.server_domain +
+              "/recipes/fullDetailes?recipeid=" +
+              this.$route.params.recipeId,
+            { withCredentials: true }
+          );
+        }
 
         // console.log("response.status", response.status);
         if (response.status !== 200) this.$router.replace("/NotFound");
@@ -113,45 +127,82 @@ export default {
         return;
       }
 
-      console.log(response.data);
+      let _recipe;
 
-      let {
-        analyze_Instructions,
-        instructions,
-        ingredients,
-        aggregateLikes,
-        readyInMinutes,
-        image,
-        title,
-        servings,
-        vegan,
-        vegetarian,
-        glutenFree,
-      } = response.data;
+      if (this.$route.params.title == "My Recipes") {
+        console.log(response.data);
 
-      console.log(analyze_Instructions);
+        let {
+          title,
+          image,
+          readyInMinutes,
+          aggregateLikes,
+          vegan,
+          vegetarian,
+          glutenFree,
+          ingredients,
+          instructions,
+          servings,          
+        } = response.data;
 
-      let _instructions = analyze_Instructions
-        .map((fstep) => {
-          fstep.steps[0].step = fstep.name + fstep.steps[0].step;
-          return fstep.steps;
-        })
-        .reduce((a, b) => [...a, ...b], []);
+        let _instructions = instructions;
 
-      let _recipe = {
-        instructions,
-        _instructions,
-        analyze_Instructions,
-        ingredients,
-        aggregateLikes,
-        readyInMinutes,
-        image,
-        title,
-        servings,
-        vegan,
-        vegetarian,
-        glutenFree,
-      };
+        _recipe = {
+          title,
+          image,
+          readyInMinutes,
+          aggregateLikes,
+          vegan,
+          vegetarian,
+          glutenFree,
+          ingredients,
+          _instructions,
+          servings,
+        };
+
+      } else {
+        console.log(response.data);
+
+        let {
+          analyze_Instructions,
+          instructions,
+          ingredients,
+          aggregateLikes,
+          readyInMinutes,
+          image,
+          title,
+          servings,
+          vegan,
+          vegetarian,
+          glutenFree,
+        } = response.data;
+
+        console.log(analyze_Instructions);
+
+        let _instructions = analyze_Instructions
+          .map((fstep) => {
+            fstep.steps[0].step = fstep.name + fstep.steps[0].step;
+            return fstep.steps;
+          })
+          .reduce((a, b) => [...a, ...b], []);
+
+        console.log(_instructions);
+
+        _recipe = {
+          instructions,
+          _instructions,
+          analyze_Instructions,
+          ingredients,
+          aggregateLikes,
+          readyInMinutes,
+          image,
+          title,
+          servings,
+          vegan,
+          vegetarian,
+          glutenFree,
+        };
+      }
 
       this.recipe = _recipe;
       this.checkIfFavorite();
@@ -191,10 +242,10 @@ export default {
           { withCredentials: true }
         );
 
-        if (response != undefined){
+        if (response != undefined) {
           if (response.data == true) this.favorite = true;
         }
-        
+
         console.log(reaponse);
       } catch (err) {
         console.log(err.response);

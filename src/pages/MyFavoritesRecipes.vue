@@ -1,30 +1,10 @@
 <template>
-  <div class="container" @submit.prevent="onRandonRecipes">
-    <h1 class="title">Main Page</h1>
+  <div class="container">
+    <!-- <h1 class="title">Main Page</h1> -->
     <RecipePreviewList
-      title="Explore This Recipes"
+      title="My Favorite Recipes"
       class="RandomRecipes center"
     />
-    <button type="submit" class="btn btn-dark">More Recipes</button>
-    <router-link v-if="!$root.store.username" to="/login" tag="button"
-      >You need to Login to vue this</router-link
-    >
-    {{ !$root.store.username }}
-    <RecipePreviewList
-      title="Last Viewed Recipes"
-      :class="{
-        RandomRecipes: true,
-        blur: !$root.store.username,
-        center: true,
-      }"
-      disabled
-    ></RecipePreviewList>
-
-    <!-- <div
-      style="position: absolute;top: 70%;left: 50%;transform: translate(-50%, -50%);"
-    >
-      Centeredasdasdad
-    </div>-->
   </div>
 </template>
 
@@ -34,12 +14,6 @@ export default {
   components: {
     RecipePreviewList,
   },
-
-  methods:{
-    onRandonRecipes(){
-      
-    }
-  }
 };
 </script>
 

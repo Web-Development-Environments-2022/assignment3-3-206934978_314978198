@@ -4,7 +4,7 @@
       <router-link
         :to="{
           name: 'recipe',
-          params: { recipeId: recipe.id },
+          params: { recipeId: recipe.id, title: title },
         }"
         class="recipe-preview"
       >
@@ -109,28 +109,14 @@ export default {
       required: false,
       default: false,
     },
-  },
-  methods: {
-    async addToFavorite() {
-      const recipe = { recipeId: this.$route.params.recipeId };
-      let response;
-
-      try {
-        response = await this.axios.post(
-          this.$root.store.server_domain + "/user/favorites",
-          {
-            rec_id: recipe.recipeId,
-            withCredentials: true,
-          }
-        );
-        this.favorite = true;
-      } catch (err) {
-        console.log(err.response);
-        this.form.submitError = err.response.data.message;
-      }
+    title: {
+      type: String,
+      required: true,
     },
   },
+
   async created() {
+    console.log(this.title);
     let watched_response = await this.axios.get(
       this.$root.store.server_domain +
         "/recipes/isWatched?recipeId=" +
@@ -152,6 +138,28 @@ export default {
     if (favorite_response.data == true) {
       this.favorite = true;
     }
+  },
+
+  //Mayby Not Needed!!
+  methods: {
+    async addToFavorite() {
+      const recipe = { recipeId: this.$route.params.recipeId };
+      let response;
+
+      try {
+        response = await this.axios.post(
+          this.$root.store.server_domain + "/user/favorites",
+          {
+            rec_id: recipe.recipeId,
+            withCredentials: true,
+          }
+        );
+        this.favorite = true;
+      } catch (err) {
+        console.log(err.response);
+        this.form.submitError = err.response.data.message;
+      }
+    },
   },
 };
 </script>

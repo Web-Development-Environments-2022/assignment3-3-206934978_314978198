@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button v-b-modal="'add-recipe-modal'">Add New Recipe</b-button>
+    <b-button v-b-modal.add-recipe-modal>Add New Modal</b-button>
     <b-modal
       id="add-recipe-modal"
       ref="modal"
@@ -238,7 +238,7 @@ export default {
       },
       image: {
         required,
-        url
+        url,
       },
       servings: {
         required,
@@ -376,5 +376,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

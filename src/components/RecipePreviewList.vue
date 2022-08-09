@@ -4,11 +4,16 @@
       {{ title }}:
       <slot></slot>
     </h3>
-    <b-row>
-      <b-row v-for="r in recipes" :key="r.id">
-        <RecipePreview class="recipePreview" :recipe="r" :log_in="log_in" />
+    <div v-if="no_results">
+      <h4>There is no results ☹️</h4>
+    </div>
+    <div v-else>
+      <b-row>
+        <b-row v-for="r in recipes" :key="r.id">
+          <RecipePreview class="recipePreview" :recipe="r" :log_in="log_in" :title="title" />
+        </b-row>
       </b-row>
-    </b-row>
+    </div>
   </b-container>
 </template>
 
@@ -33,6 +38,7 @@ export default {
   data() {
     return {
       recipes: [],
+      no_results: false,
     };
   },
   mounted() {
@@ -45,6 +51,10 @@ export default {
           await this.randomRecipes();
         } else if (this.title == "Last Viewed Recipes") {
           await this.lastViewedRecipes();
+        } else if (this.title == "My Favorite Recipes") {
+          await this.favoriteRecipes();
+        } else if (this.title == "My Recipes") {
+          await this.myRecipes();
         }
       } catch (error) {
         console.log(error);
@@ -79,9 +89,65 @@ export default {
           { withCredentials: true }
         );
 
-        returned_recipes = response.data;
-        this.recipes = [];
-        this.recipes.push(...returned_recipes);
+        console.log(response);
+
+        if (response == []) {
+          this.no_results = true;
+        } else {
+          returned_recipes = response.data;
+          this.recipes = [];
+          this.recipes.push(...returned_recipes);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async favoriteRecipes() {
+      try {
+        let response;
+        let returned_recipes;
+
+        console.log(this.$root.store.server_domain + "/user/favorites");
+
+        response = await this.axios.get(
+          this.$root.store.server_domain + "/user/favorites",
+          { withCredentials: true }
+        );
+
+        console.log(response);
+
+        if (response == []) {
+          this.no_results = true;
+        } else {
+          returned_recipes = response.data;
+          this.recipes = [];
+          this.recipes.push(...returned_recipes);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async myRecipes() {
+      try {
+        let response;
+        let returned_recipes;
+
+        response = await this.axios.get(
+          this.$root.store.server_domain + "/user/myRecipes",
+          { withCredentials: true }
+        );
+
+        console.log(response);
+
+        if (response.data.length == 0) {
+          this.no_results = true;
+        } else {
+          returned_recipes = response.data;
+          this.recipes = [];
+          this.recipes.push(...returned_recipes);
+        }
       } catch (error) {
         console.log(error);
       }

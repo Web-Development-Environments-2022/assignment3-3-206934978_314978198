@@ -1,71 +1,32 @@
 <template>
-    <div>
-        <b-container>
-            <b-row>
-                <b-col v-for="r in this.results" :key="r.id">
-                <RecipePreview class="recipePreview" :recipe="r" />
-                </b-col>
-            </b-row>
-        </b-container>
-    </div>    
+  <div class="container">
+    <!-- <h1 class="title">Main Page</h1> -->
+    <RecipePreviewList
+      title="My Recipes"
+      class="RandomRecipes center"
+    />
+  </div>
 </template>
 
-
-
 <script>
-import { RecipePreview } from "../components/RecipePreview.vue";
-
-export default{
-    name: "MyRecipes",
-    components:{
-        RecipePreview,
-    },
-    data(){
-        return{
-            results: [],
-        }
-    },
-    methods: {
-        async Search() {
-            try {
-                const response = await this.axios.get();
-                if (response.data === "There is no results!") {
-                    this.$root.toast(
-                    "My Recipes",
-                    "There is no results",
-                    "failure"
-                    );
-                } else {
-                    const recipes_id = response.data;
-                    const recipes = [];
-
-                    for (let i = 0; i < recipes_id.length; i++) {
-                        recipes[i] = await this.axios.get(
-                        // "https://test-for-3-2.herokuapp.com/user/Register",
-                        this.$root.store.server_domain +
-                            "/recipes/:recipeId?id=" +
-                            recipes_id[i]
-                        );
-                    }
-
-                    for (let i = 0; i < recipes.length; i++) {
-                        this.results[i] = recipes[i].data;
-                    }
-                    console.log(this.results);
-                }
-
-            }
-            catch (err){
-                console.log(err.response);
-                this.submitError = err.response.data.message;
-            }
-        }
-    }
-}
+import RecipePreviewList from "../components/RecipePreviewList.vue";
+export default {
+  components: {
+    RecipePreviewList,
+  },
+};
 </script>
 
-
-
-<style scoped>
-
+<style lang="scss" scoped>
+.RandomRecipes {
+  margin: 10px 0 10px;
+}
+.blur {
+  -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
+  filter: blur(2px);
+}
+::v-deep .blur .recipe-preview {
+  pointer-events: none;
+  cursor: default;
+}
 </style>

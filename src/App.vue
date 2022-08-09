@@ -11,12 +11,13 @@
       </span>
       <span v-else>
         <router-link :to="{ name: 'myrecipes' }">My Recipes</router-link>|
-        <NewRecipeModal></NewRecipeModal>| 
+        <router-link :to="{ name: 'myfavoriterecipes' }">My Favorite Recipes</router-link>
         {{ $root.store.username }}: <button @click="Logout">Logout</button>|
         <!-- <b-button v-b-modal.modal-prevent-closing>Add New Recipe</b-button> -->
         <!-- <b-button v-b-modal.modal-prevent-closing>Add
         </b-button> -->
       </span>
+      <NewRecipeModal></NewRecipeModal>
     </div>
     <router-view />
   </div>
