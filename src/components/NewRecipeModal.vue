@@ -1,213 +1,207 @@
 <template>
-  <div>
-    <b-button v-b-modal.add-recipe-modal>Add New Modal</b-button>
-    <b-modal
-      id="add-recipe-modal"
-      ref="modal"
-      title="Add New Recipe"
-      @show="resetModal"
-      @hidden="resetModal"
-      @ok="handleOk"
-      >Ceate You're New Recipe:
-      <br />
-      <br />
-      <b-form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group label="Recipe's Title: " label-for="title-input">
-          <b-form-input
-            id="title-input"
-            v-model="$v.form.title.$model"
-            type="text"
-            :state="validateState('title')"
-          ></b-form-input>
-          <b-form-invalid-feedback v-if="!$v.form.title.required">
-            recipes's title is required
-          </b-form-invalid-feedback>
-          <b-form-invalid-feedback v-if="!$v.form.title.alpha">
-            Recipce's title can only contain letters
-          </b-form-invalid-feedback>
-        </b-form-group>
+  <b-modal
+    id="add-recipe-modal"
+    ref="modal"
+    title="Add New Recipe"
+    @show="resetModal"
+    @hidden="resetModal"
+    @ok="handleOk"
+    >Ceate You're New Recipe:
+    <br />
+    <br />
+    <b-form ref="form" @submit.prevent="handleSubmit" @reset.prevent="resetModal">
+      <b-form-group label="Recipe's Title: " label-for="title-input">
+        <b-form-input
+          id="title-input"
+          v-model="$v.form.title.$model"
+          type="text"
+          :state="validateState('title')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.title.required">
+          Recipes's title is required
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-if="!$v.form.title.alpha">
+          Recipce's title can only contain letters
+        </b-form-invalid-feedback>
+      </b-form-group>
 
-        <b-form-group label="Recipe's image URL: " label-for="image-input">
-          <b-form-input
-            id="image-input"
-            v-model="$v.form.image.$model"
-            type="url"
-            :state="validateState('image')"
-          ></b-form-input>
-          <b-form-invalid-feedback v-if="!$v.form.title.required">
-            Recipe's image URL is required
-          </b-form-invalid-feedback>
-          <b-form-invalid-feedback v-if="!$v.form.title.url">
-            Recipe's image URL should be URL
-          </b-form-invalid-feedback>
-        </b-form-group>
+      <b-form-group label="Recipe's image URL: " label-for="image-input">
+        <b-form-input
+          id="image-input"
+          v-model="$v.form.image.$model"
+          type="url"
+          :state="validateState('image')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.title.required">
+          Recipe's image URL is required
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-if="!$v.form.title.url">
+          Recipe's image URL should be URL
+        </b-form-invalid-feedback>
+      </b-form-group>
 
-        <b-form-group label="Recipe's Servings: " label-for="servings-input">
-          <b-form-input
-            id="servings-input"
-            v-model="$v.form.servings"
-            type="number"
-            min="1"
-            :state="validateState('servings')"
-          ></b-form-input>
-          <b-form-invalid-feedback v-if="!$v.form.servings.required">
-            Recipe's servings is required
-          </b-form-invalid-feedback>
-          <b-form-invalid-feedback v-if="!$v.form.servings.numeric">
-            Recipe's servings should be numeric
-          </b-form-invalid-feedback>
-        </b-form-group>
+      <b-form-group label="Recipe's Servings: " label-for="servings-input">
+        <b-form-input
+          id="servings-input"
+          v-model="$v.form.servings.$model"
+          type="number"
+          min="1"
+          :state="validateState('servings')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.servings.required">
+          Recipe's servings is required
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-if="!$v.form.servings.numeric">
+          Recipe's servings should be numeric
+        </b-form-invalid-feedback>
+        <!-- <b-form-invalid-feedback v-if="!$v.form.servings.betweenS">
+          Recipe's servings should be 1 serve minimum
+        </b-form-invalid-feedback> -->
+      </b-form-group>
 
-        <b-form-group label="Recipe's Time: " label-for="readyInMinutes-input">
-          <b-form-input
-            id="readyInMinutes-input"
-            v-model="$v.form.readyInMinutes.$model"
-            type="number"
-            min="1"
-            :state="validateState('readyInMinutes')"
-          ></b-form-input>
-          <b-form-invalid-feedback v-if="!$v.form.readyInMinutes.required">
-            Recipe's time is required
-          </b-form-invalid-feedback>
-          <b-form-invalid-feedback v-if="!$v.form.readyInMinutes.numeric">
-            Recipe's time should be numeric
-          </b-form-invalid-feedback>
-        </b-form-group>
+      <b-form-group label="Recipe's Time: " label-for="readyInMinutes-input">
+        <b-form-input
+          id="readyInMinutes-input"
+          v-model="$v.form.readyInMinutes.$model"
+          type="number"
+          min="1"
+          :state="validateState('readyInMinutes')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.readyInMinutes.required">
+          Recipe's time is required
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-if="!$v.form.readyInMinutes.numeric">
+          Recipe's time should be numeric
+        </b-form-invalid-feedback>
+        <!-- <b-form-invalid-feedback v-if="!$v.form.readyInMinute.betweenRIM">
+          Recipe's time should be 1 minute minimum
+        </b-form-invalid-feedback> -->
+      </b-form-group>
 
-        <b-form-group label="Vegan: " label-for="vegan-input">
-          <b-form-checkbox
-            switch
-            class="mr-n2 mb-n1"
-            id="vegan-input"
-            v-model="$v.form.vegan"
-          >
-            <span class="sr-only"></span>
-          </b-form-checkbox>
-        </b-form-group>
-
-        <b-form-group label="Vegetarian: " label-for="vegetarian-input">
-          <b-form-checkbox
-            switch
-            class="mr-n2 mb-n1"
-            id="vegetarian-input"
-            v-model="$v.form.vegetarian"
-          >
-            <span class="sr-only"></span>
-          </b-form-checkbox>
-        </b-form-group>
-
-        <b-form-group label="Gluten Free: " label-for="gluten_free-input">
-          <b-form-checkbox
-            switch
-            class="mr-n2 mb-n1"
-            id="gluten-free-input"
-            v-model="$v.form.gluten_free"
-          >
-            <span class="sr-only"></span>
-          </b-form-checkbox>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-ingredients"
-          label-cols-sm="3"
-          label="Ingredients"
-          laber-for="ingredients"
+      <b-form-group label="Vegan: " label-for="vegan-input">
+        <b-form-checkbox
+          switch
+          class="mr-n2 mb-n1"
+          id="vegan-input"
+          v-model="form.vegan"
         >
-        </b-form-group>
-      </b-form>
-      <b-form @submit.stop.prevent="handleSubmit">
-        <b-form-group
-          label="Ingredients: "
-          lable-for="ingredients-input"
+          <span class="sr-only"></span>
+        </b-form-checkbox>
+      </b-form-group>
+
+      <b-form-group label="Vegetarian: " label-for="vegetarian-input">
+        <b-form-checkbox
+          switch
+          class="mr-n2 mb-n1"
+          id="vegetarian-input"
+          v-model="form.vegetarian"
+        >
+          <span class="sr-only"></span>
+        </b-form-checkbox>
+      </b-form-group>
+
+      <b-form-group label="Gluten Free: " label-for="gluten_free-input">
+        <b-form-checkbox
+          switch
+          class="mr-n2 mb-n1"
+          id="gluten-free-input"
+          v-model="form.gluten_free"
+        >
+          <span class="sr-only"></span>
+        </b-form-checkbox>
+      </b-form-group>
+    </b-form>
+
+    <b-form @submit.stop.prevent="handleSubmit">
+      <label>Ingredients:</label>
+      <b-form-group
+        v-for="ing in $v.form.ingrediants.$each.$iter"
+        :key="ing.key"
+      >
+        <b-form-input
           :state="validateState('ingrediants')"
-          v-for="ingrediant in form.ingrediants"
-          :key="ingrediant.value"
-          invalid-feedback="*"
-        >
-          <b-form-input
-            id="ingredients-input"
-            v-model="$v.form.ingrediants.$model"
-            type="text"
-            :state="validateState('ingredients')"
-            class="mb-2 mr-sm-2 mb-sm-0"
-          ></b-form-input>
-          <b-form-invalid-feedback v-if="!$v.form.ingredients.required">
-            Recipe's ingredientds is required
-          </b-form-invalid-feedback>
-        </b-form-group>
+          v-model.trim="ing.value.$model"
+          type="text"
+          required
+          placeholder="Ingredient"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!ing.value.required">
+          Recipes's ingredient is required
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-if="!ing.value.alpha">
+          Recipce's ingredient can only contain letters
+        </b-form-invalid-feedback>
+      </b-form-group>
 
+      <b-button-toolbar>
         <b-button-group>
           <b-button
-            type="button"
-            variant="outline-info"
-            class="mb-2"
-            @click="addInstruction"
+            title="Add Ingrediant"
+            variant="outline-primary"
+            @click="addIngredient"
           >
-            <b-icon icon="plus-lg" aria-hidden="true"></b-icon>
+            <b-icon icon="plus" aria-hidden="true"></b-icon>
           </b-button>
           <b-button
-            type="button"
-            variant="outline-info"
-            class="mb-2"
-            @click="removeInstruction"
+            title="Remove Ingrediant"
+            variant="outline-primary"
+            @click="removeIngredient"
           >
-            <b-icon icon="dash-lg" aria-hidden="true"></b-icon>
+            <b-icon icon="dash" aria-hidden="true"></b-icon>
           </b-button>
         </b-button-group>
+      </b-button-toolbar>
+    </b-form>
 
-        <!-- 
-              <b-form-input
-                v-model="ingrediant.value"
-                required
-                type="text"
-              ></b-form-input>
-            </b-form-group>
+    <b-form @submit.stop.prevent="handleSubmit">
+      <label>Instructions:</label>
+      <b-form-group
+        v-for="ins in $v.form.instractions.$each.$iter"
+        :key="ins.key"
+      >
+        <b-form-input
+          :state="validateState('instractions')"
+          v-model.trim="ins.value.$model"
+          type="text"
+          required
+          placeholder="Instruction"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!ins.value.required">
+          Recipes's instruction is required
+        </b-form-invalid-feedback>
+      </b-form-group>
 
-             -->
-
-        <!-- <b-form-group
-              label="Recipe's Instractions: "
-              label-for="instractions-input"
-              v-for="instruc in form.instractions"
-              :key="instruc.value"
-              invalid-feedback="*"
-            >
-              <b-form-input
-                id="instractions-input"
-                v-model="instruc.value"
-                type="text"
-                :state="validateState('instractions')"
-              ></b-form-input>
-              <b-form-invalid-feedback v-if="!instruc.value.required">
-                Recipe's instractions is required
-              </b-form-invalid-feedback>
-            </b-form-group> -->
-        <!-- 
-            <b-button-group>
-              <b-button
-                type="button"
-                variant="outline-info"
-                class="mb-2"
-                @click="addInstruction"
-              >
-                <b-icon icon="plus-lg" aria-hidden="true"></b-icon>
-              </b-button>
-              <b-button
-                type="button"
-                variant="outline-info"
-                class="mb-2"
-                @click="removeInstruction"
-              >
-                <b-icon icon="dash-lg" aria-hidden="true"></b-icon>
-              </b-button>
-            </b-button-group> -->
-      </b-form>
-    </b-modal>
-  </div>
+      <b-button-toolbar>
+        <b-button-group>
+          <b-button
+            title="Add Instruction"
+            variant="outline-primary"
+            @click="addInstruction"
+          >
+            <b-icon icon="plus" aria-hidden="true"></b-icon>
+          </b-button>
+          <b-button
+            title="Remove Instruction"
+            variant="outline-primary"
+            @click="removeInstruction"
+          >
+            <b-icon icon="dash" aria-hidden="true"></b-icon>
+          </b-button>
+        </b-button-group>
+      </b-button-toolbar>
+    </b-form>
+  </b-modal>
 </template>
 
 <script>
-import { required, alpha, numeric, url } from "vuelidate/lib/validators";
+import { BModal } from "bootstrap-vue";
+import {
+  required,
+  alpha,
+  numeric,
+  url,
+  // between,
+} from "vuelidate/lib/validators";
 
 export default {
   name: "NewRecipe",
@@ -218,16 +212,21 @@ export default {
         image: undefined,
         servings: undefined,
         readyInMinutes: undefined,
-        vegan: 0,
-        vegetarian: 0,
-        gluten_free: 0,
-        ingrediants: [{ key: 0, value: undefined }],
-        instractions: [{ key: 0, value: undefined }],
+        vegan: false,
+        vegetarian: false,
+        gluten_free: false,
+        ingrediants: [{ key: 1, value: undefined }],
+        instractions: [{ key: 1, value: undefined }],
+        popularity: 0,
         submitError: undefined,
       },
       ingrediantsCounter: 1,
       instructionsCounter: 1,
     };
+  },
+
+  comments: {
+    BModal,
   },
 
   validations: {
@@ -243,16 +242,28 @@ export default {
       servings: {
         required,
         numeric,
+        // betweenS: between(1, 1000)
       },
       readyInMinutes: {
         required,
         numeric,
+        // betweenRIM: between(1, 1400)
       },
       ingrediants: {
-        required,
+        $each: {
+          value: {
+            required,
+            alpha,
+          },
+        },
       },
       instractions: {
-        required,
+        $each: {
+          value: {
+            required,
+            // alpha,
+          },
+        },
       },
     },
   },
@@ -274,11 +285,13 @@ export default {
         image: undefined,
         servings: undefined,
         readyInMinutes: undefined,
-        vegan: 0,
-        vegetarian: 0,
-        gluten_free: 0,
-        ingrediants: [{ key: 0, value: undefined }],
-        instractions: [{ key: 0, value: undefined }],
+        vegan: false,
+        vegetarian: false,
+        gluten_free: false,
+        ingrediants: [{ key: 1, value: undefined }],
+        instractions: [{ key: 1, value: undefined }],
+        popularity: 0,
+        submitError: undefined,
       };
       this.$nextTick(() => {
         this.$v.$reset();
@@ -298,22 +311,39 @@ export default {
 
     async createNewRecipe() {
       try {
+        let _ingrediants = [];
+
+        for (let i = 0; i < this.ingrediantsCounter; i++) {
+          _ingrediants[i] = this.form.ingrediants[i].value;
+        }
+
+        let _instructions = [];
+
+        for (let i = 0; i < this.instructionsCounter; i++) {
+          _instructions[i] = this.form.instractions[i].value;
+        }
+
+        // this.form.ingrediants = _ingredients;
+        // this.form.instractions = _instructions;
+
         const response = await this.axios.post(
-          this.$root.store.server_domain + "/user/myRecipies",
+          this.$root.store.server_domain + "/user/myRecipes",
           {
             title: this.form.title,
-            imageUrl: this.form.image,
+            image: this.form.image,
             readyInMinutes: this.form.readyInMinutes,
+            popularity: this.form.popularity,
             vegan: this.form.vegan,
             vegetarian: this.form.vegetarian,
             gluten_free: this.form.gluten_free,
-            ingredients: this.form.ingredients,
-            instructions: this.form.instructions,
-            servings: this.form.servings,
-            popularity: 0,
-          }
+            ingrediants: _ingrediants,
+            instructions: _instructions,
+            servings: this.form.servings
+          },
+          { withCredentials: true }
         );
-        if (response.status == 201) {
+
+        if (response.status == 200) {
           this.$root.toast(
             "Created New Recipe",
             "New recipe added successfully",
@@ -327,16 +357,10 @@ export default {
     },
 
     handleSubmit() {
-      // Exit when the form isn't valid
-      // if (!this.checkFormValidity()) {
-      //   return;
-      // }
-      // Push the name to submitted names
-
       // Hide the modal manually
       this.createNewRecipe();
       this.$nextTick(() => {
-        this.$bvModal.hide("modal-prevent-closing");
+        this.$bvModal.hide("add-recipe-modal");
       });
     },
 
@@ -361,15 +385,15 @@ export default {
     removeIngredient() {
       if (this.ingrediantsCounter > 1) {
         this.ingrediantsCounter -= 1;
+        this.form.ingrediants.pop();
       }
-      this.form.ingrediants.pop();
     },
 
     removeInstruction() {
       if (this.instructionsCounter > 1) {
         this.instructionsCounter -= 1;
+        this.form.instractions.pop();
       }
-      this.form.instractions.pop();
     },
   },
 };

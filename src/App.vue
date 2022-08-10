@@ -3,7 +3,6 @@
     <div id="nav">
       <router-link :to="{ name: 'main' }">Vue Recipes</router-link>|
       <router-link :to="{ name: 'search' }">Search</router-link>|
-      <!-- {{ !$root.store.username }} -->
       <span v-if="!$root.store.username">
         Guest:
         <router-link :to="{ name: 'register' }">Register</router-link>|
@@ -11,13 +10,23 @@
       </span>
       <span v-else>
         <router-link :to="{ name: 'myrecipes' }">My Recipes</router-link>|
-        <router-link :to="{ name: 'myfavoriterecipes' }">My Favorite Recipes</router-link>
+        <router-link :to="{ name: 'myfavoriterecipes' }"
+          >My Favorite Recipes</router-link
+        >
         {{ $root.store.username }}: <button @click="Logout">Logout</button>|
         <!-- <b-button v-b-modal.modal-prevent-closing>Add New Recipe</b-button> -->
         <!-- <b-button v-b-modal.modal-prevent-closing>Add
         </b-button> -->
       </span>
-      <NewRecipeModal></NewRecipeModal>
+
+      
+      <div>
+        <b-button v-b-modal.add-recipe-modal>Launch demo modal</b-button>
+        <NewRecipeModal></NewRecipeModal>
+        <!-- <b-modal id="modal-1" title="BootstrapVue">
+          <p class="my-4">Hello from modal!</p>
+        </b-modal> -->
+      </div>
     </div>
     <router-view />
   </div>

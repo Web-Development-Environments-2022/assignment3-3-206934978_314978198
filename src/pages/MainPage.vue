@@ -1,7 +1,7 @@
 <template>
   <!-- @submit.prevent="onRandonRecipes" -->
   <div class="container">
-    <!-- <h1 class="title">Main Page</h1> -->
+    <h1 class="title">Main Page</h1>
     <div class="right-div">
       <RecipePreviewList
         title="Explore This Recipes"
