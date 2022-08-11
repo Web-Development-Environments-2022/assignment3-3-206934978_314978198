@@ -10,7 +10,12 @@
     <div v-else>
       <b-row>
         <b-row v-for="r in recipes" :key="r.id">
-          <RecipePreview class="recipePreview" :recipe="r" :log_in="log_in" :title="title" />
+          <RecipePreview
+            class="recipePreview"
+            :recipe="r"
+            :log_in="log_in"
+            :title="title"
+          />
         </b-row>
       </b-row>
     </div>
@@ -18,7 +23,7 @@
 </template>
 
 <script>
-import RecipePreview from "./RecipePreview.vue";
+import RecipePreview from "./RecipePreview";
 export default {
   name: "RecipePreviewList",
   components: {
@@ -34,18 +39,71 @@ export default {
       required: false,
       default: false,
     },
+    searched: {
+      type: Number,
+      required: false,
+    },
+    query: {
+      type: String,
+      required: false,
+    },
+    number: {
+      type: String,
+      required: false,
+    },
+    cuisine: {
+      type: String,
+      required: false,
+    },
+    diet: {
+      type: String,
+      required: false,
+    },
+    intolerance: {
+      type: String,
+      required: false,
+    },
+    sortby: {
+      type: String,
+      required: false,
+    },
   },
+
+  watch: {
+    searched: {
+      handler() {
+        console.log("in watch");
+        if (this.searched > 0) {
+          console.log("in searched function");
+          this.updateRecipes();
+        }
+      },
+      immediate: true,
+    },
+  },
+
   data() {
     return {
       recipes: [],
       no_results: false,
     };
   },
-  mounted() {
+
+  created() {
     this.updateRecipes();
   },
+
+  // mounted() {
+  //   if (this.searched > 0) {
+  //     console.log("in mounted");
+  //     this.updateRecipes();
+  //   }
+  // },
+
   methods: {
     async updateRecipes() {
+      console.log("in updateRecipes");
+      console.log(this.searched);
       try {
         if (this.title == "Explore This Recipes") {
           await this.randomRecipes();
@@ -55,6 +113,8 @@ export default {
           await this.favoriteRecipes();
         } else if (this.title == "My Recipes") {
           await this.myRecipes();
+        } else if (this.title == "Search Results") {
+          await this.searchRecipes();
         }
       } catch (error) {
         console.log(error);
@@ -148,6 +208,58 @@ export default {
           this.recipes = [];
           this.recipes.push(...returned_recipes);
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async searchRecipes() {
+      console.log("in searchRecipes");
+      try {
+        let response;
+        let returned_recipes;
+        console.log(
+          this.$root.store.server_domain +
+            "/recipes/search?searchQuery=" +
+            this.query +
+            "&number=" +
+            this.number +
+            "&cuisine=" +
+            this.cuisine +
+            "&diet=" +
+            this.diet +
+            "&intolerances=" +
+            this.intolerances
+        );
+
+        response = await this.axios.get(
+          this.$root.store.server_domain +
+            "/recipes/search?searchQuery=" +
+            this.query +
+            "&number=" +
+            this.number +
+            "&cuisine=" +
+            this.cuisine +
+            "&diet=" +
+            this.diet +
+            "&intolerances=" +
+            this.intolerances
+        );
+
+        returned_recipes = response.data;
+
+        console.log(response.data);
+
+        if (returned_recipes == "There is no results!") {
+          this.no_results = true;
+        } else {
+          this.recipes = [];
+          this.recipes.push(...returned_recipes);
+
+          this.recipes = _.sortBy(this.recipes, this.sortby);
+        }
+
+        $root.store.lastSearch = this.recipes;
       } catch (error) {
         console.log(error);
       }

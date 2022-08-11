@@ -1,5 +1,6 @@
 <template>
   <div id="navbar">
+    <!-- https://bootstrap-vue.org/docs/components/navbar#color-schemes -->
     <b-navbar class="navbar navbar-light" style="background-color: lightblue">
       <b-navbar-nav>
         <b-nav-item href="#">
@@ -26,12 +27,12 @@
           <b-dropdown-item></b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-navbar-item>
+        <b-nav-item>
             Hello {{ $root.store.username }}
-        </b-navbar-item>
-        <b-navbar-item @click="Logout">
+        </b-nav-item>
+        <b-nav-item @click="Logout">
             Logout
-        </b-navbar-item>
+        </b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav v-else>

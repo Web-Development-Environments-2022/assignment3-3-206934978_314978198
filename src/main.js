@@ -77,20 +77,19 @@ Vue.config.productionTip = false;
 const shared_data = {
   server_domain: state.server_domain,
   username: localStorage.username,
-  favoriteRecipes: localStorage.favoriteRecipes,
-  myRecipes: localStorage.myRecipes,
-  familyRecipes: localStorage.familyRecipes,
   lastSearch: undefined,
   
   login(username) {
     localStorage.setItem("username", username);
     this.username = username;
+    this.lastSearch = [];
     console.log("login", this.username);
   },
   logout() {
     console.log("logout");
     localStorage.removeItem("username");
     this.username = undefined;
+    this.lastSearch = undefined;
 
   },
 };

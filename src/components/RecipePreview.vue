@@ -61,7 +61,7 @@
               >
               </b-avatar>
             </b-card-body>
-            <b-card-footer v-if="log_in" class="recipe-footer">
+            <b-card-footer v-if="$root.store.username" class="recipe-footer">
               <!-- <b-card-body class="recipe-body"> -->
                 <b-button
                   v-if="!this.favorite"
