@@ -115,6 +115,8 @@ export default {
           await this.myRecipes();
         } else if (this.title == "Search Results") {
           await this.searchRecipes();
+        } else if (this.title == "Last Search") {
+          await this.LastSearch();
         }
       } catch (error) {
         console.log(error);
@@ -256,13 +258,26 @@ export default {
           this.recipes = [];
           this.recipes.push(...returned_recipes);
 
-          this.recipes = _.sortBy(this.recipes, this.sortby);
+          if (this.sortby == "aggregateLikes") {
+            this.recipes = this.recipes.sort(
+              (a, b) => a.aggregateLikes - b.aggregateLikes
+            );
+          } else if (this.sortby == "readyInMinutes") {
+            this.recipes = this.recipes.sort(
+              (a, b) => a.readyInMinutes - b.readyInMinutes
+            );
+          }
         }
-
-        $root.store.lastSearch = this.recipes;
+        this.$root.store.setLastSearch(this.recipes);
       } catch (error) {
         console.log(error);
       }
+    },
+
+    LastSearch(){
+      this.recipes = [];
+      console.log(this.$root.store.lastSearch);
+      this.recipes = this.$root.store.lastSearch;
     },
   },
 };

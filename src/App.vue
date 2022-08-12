@@ -2,6 +2,8 @@
   <div id="app">
     <!-- <NavigationBar :logout="Logout"></NavigationBar> -->
 
+    <!-- https://bootstrap-vue.org/docs/components/navbar#color-schemes -->
+
     <b-navbar class="navbar navbar-light" style="background-color: lightblue">
       <b-navbar-nav>
         <b-nav-item href="#">

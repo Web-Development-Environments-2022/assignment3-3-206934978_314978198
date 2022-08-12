@@ -128,9 +128,9 @@
         <b-form-invalid-feedback v-if="!ing.value.required">
           Recipes's ingredient is required
         </b-form-invalid-feedback>
-        <b-form-invalid-feedback v-if="!ing.value.alpha">
+        <!-- <b-form-invalid-feedback v-if="!ing.value.alpha">
           Recipce's ingredient can only contain letters
-        </b-form-invalid-feedback>
+        </b-form-invalid-feedback> -->
       </b-form-group>
 
       <b-button-toolbar>
@@ -253,7 +253,7 @@ export default {
         $each: {
           value: {
             required,
-            alpha,
+            // alpha,
           },
         },
       },

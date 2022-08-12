@@ -105,28 +105,27 @@
             >Reset
           </b-button>
         </b-nav-form>
-
-        <div v-if="searched > 0">
-          <RecipePreviewList
-            title="Search Results"
-            :log_in="Boolean($root.store.username)"
-            :searched="searched"
-            :query="query"
-            :number="number"
-            :cuisine="form.cuisine"
-            :diet="form.diet"
-            :intolerance="form.intolerances"
-            :sort="sortby"
-          />
-        </div>
-        <div v-else-if="$root.stor.lastSearch">
-          <RecipePreviewList
-            title="Last Search"
-            :log_in="Boolean($root.store.username)"
-          />
-        </div>
       </b-navbar-nav>
     </b-navbar>
+    <div v-if="searched > 0">
+      <RecipePreviewList
+        title="Search Results"
+        :log_in="Boolean($root.store.username)"
+        :searched="searched"
+        :query="query"
+        :number="number"
+        :cuisine="form.cuisine"
+        :diet="form.diet"
+        :intolerance="form.intolerances"
+        :sort="sortby"
+      />
+    </div>
+    <div v-else-if="$root.store.lastSearch">
+      <RecipePreviewList
+        title="Last Search"
+        :log_in="Boolean($root.store.username)"
+      />
+    </div>
   </div>
 </template>
 
@@ -208,6 +207,7 @@ export default {
       this.sortby = "";
       this.sort_time = "s";
       this.sort_popularity = "s";
+      this.searched = 0;
       // this.$nextTick(() => {
       //   this.$v.$reset();
       // });

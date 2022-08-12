@@ -77,21 +77,23 @@ Vue.config.productionTip = false;
 const shared_data = {
   server_domain: state.server_domain,
   username: localStorage.username,
-  lastSearch: undefined,
+  lastSearch: localStorage.lastSearch,
   
   login(username) {
     localStorage.setItem("username", username);
     this.username = username;
-    this.lastSearch = [];
     console.log("login", this.username);
   },
   logout() {
     console.log("logout");
     localStorage.removeItem("username");
+    localStorage.removeItem("lastSearch");
     this.username = undefined;
-    this.lastSearch = undefined;
-
   },
+  setLastSearch(lastSearch){
+    localStorage.setItem("lastSearch", lastSearch);
+    console.log("lastSearch", this.lastSearch);
+  }
 };
 
 // Vue.prototype.$root.store = shared_data;
