@@ -167,6 +167,9 @@ export default {
   async created() {
     console.log("in Search Page");
     this.getLastSearch();
+    // if (sessionStorage.getItem("lastRes") != undefined) {
+    //   this.results = sessionStorage.getItem("lastRes");
+    // }
   },
 
   mounted() {
@@ -182,6 +185,10 @@ export default {
 
     this.intoleranceses.push(...intoleranceses);
     this.intoleranceses.shift();
+
+    // if (sessionStorage.getItem("lastRes") != undefined) {
+    //   this.results = sessionStorage.getItem("lastRes");
+    // }
   },
 
   methods: {
@@ -240,70 +247,76 @@ export default {
     },
 
     async getLastSearch() {
-      // let response;
-      // try {
-      //   console.log( this.$root.store.server_domain + "/user/lastSearch");
-      //   response = await this.axios.get(
-      //     this.$root.store.server_domain + "/user/lastSearch",
-      //     { withCredentials: true }
-      //   );
-      //   console.log(response);
-      //   this.lastsearch = response.data;
-      // } catch (error) {
-      //   console.log(error);
-      // }
+    //   let response;
+    //   try {
+    //     console.log( this.$root.store.server_domain + "/user/lastSearch");
+    //     response = await this.axios.get(
+    //       this.$root.store.server_domain + "/user/lastSearch",
+    //       { withCredentials: true }
+    //     );
+    //     console.log(response);
+    //     this.lastsearch = response.data;
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
     },
 
-    // async Search() {
-    //   try {
-    //     const response = await this.axios.get(
-    //       // "https://test-for-3-2.herokuapp.com/user/Register",
-    //       this.$root.store.server_domain +
-    //         "/recipes/search?searchQuery=" +
-    //         this.query +
-    //         "&number=" +
-    //         this.number +
-    //         "&cuisine=" +
-    //         this.cuisine +
-    //         "&diet=" +
-    //         this.diet +
-    //         "&intolerances=" +
-    //         this.intolerances
-    //     );
+    async Search() {
+      try {
+        const response = await this.axios.get(
+          // "https://test-for-3-2.herokuapp.com/user/Register",
+          this.$root.store.server_domain +
+            "/recipes/search?searchQuery=" +
+            this.query +
+            "&number=" +
+            this.number +
+            "&cuisine=" +
+            this.form.cuisine == undefined ? "" : this.form.cuisine +
+            "&diet=" +
+            this.form.diet == undefined ? "" : this.form.diet +
+            "&intolerances=" +
+            this.form.intolerances == undefined ? "" : this.form.intolerances
+        );
 
-    //     if (response.data === "There is no results!") {
-    //       this.$root.toast(
-    //         "Search a Recipe",
-    //         "There is no results for this search",
-    //         "failure"
-    //       );
-    //     } else {
-    //       const recipes_id = response.data;
-    //       const recipes = [];
+        if (response.data === "There is no results!") {
+          this.$root.toast(
+            "Search a Recipe",
+            "There is no results for this search",
+            "failure"
+          );
+        } else {
+          const recipes_id = response.data;
+          const recipes = [];
 
-    //       for (let i = 0; i < recipes_id.length; i++) {
-    //         recipes[i] = await this.axios.get(
-    //           // "https://test-for-3-2.herokuapp.com/user/Register",
-    //           this.$root.store.server_domain +
-    //             "/recipes/:recipeId?id=" +
-    //             recipes_id[i]
-    //         );
-    //       }
+          for (let i = 0; i < recipes_id.length; i++) {
+            recipes[i] = await this.axios.get(
+              // "https://test-for-3-2.herokuapp.com/user/Register",
+              this.$root.store.server_domain +
+                "/recipes/:recipeId?id=" +
+                recipes_id[i]
+            );
+          }
 
-    //       for (let i = 0; i < recipes.length; i++) {
-    //         this.results[i] = recipes[i].data;
-    //       }
-    //       console.log(this.results);
+          for (let i = 0; i < recipes.length; i++) {
+            this.results[i] = recipes[i].data;
+          }
+          console.log(this.results);
 
-    //       console.log(this.searched);
+          console.log(this.searched);
 
-    //       this.$root.store.lastSearch = this.results;
-    //     }
-    //   } catch (err) {
-    //     console.log(err.response);
-    //     this.submitError = err.response.data.message;
-    //   }
-    // },
+          this.$root.store.lastSearch = this.results;
+          // sessionStorage.setItem(
+          //     "lastRes",
+          //     JSON.stringify(this.results)
+
+          // );
+          
+        }
+      } catch (err) {
+        console.log(err.response);
+        this.submitError = err.response.data.message;
+      }
+    },
   },
 };
 </script>

@@ -113,6 +113,8 @@ export default {
           await this.favoriteRecipes();
         } else if (this.title == "My Recipes") {
           await this.myRecipes();
+        } else if (this.title == "My Family Recipes") {
+          await this.myFamilyRecipes();
         } else if (this.title == "Search Results") {
           await this.searchRecipes();
         } else if (this.title == "Last Search") {
@@ -190,6 +192,35 @@ export default {
         console.log(error);
       }
     },
+
+
+
+    async myFamilyRecipes() {
+      try {
+        let response;
+        let returned_recipes;
+
+        response = await this.axios.get(
+          this.$root.store.server_domain + "/user/myFamilyRecipies",
+          { withCredentials: true }
+        );
+
+        console.log(response);
+
+        if (response.data.length == 0) {
+          this.no_results = true;
+        } else {
+          returned_recipes = response.data;
+          this.recipes = [];
+          this.recipes.push(...returned_recipes);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+
+
 
     async myRecipes() {
       try {

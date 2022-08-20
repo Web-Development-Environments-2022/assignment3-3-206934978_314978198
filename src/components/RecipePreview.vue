@@ -143,14 +143,14 @@ export default {
   //Mayby Not Needed!!
   methods: {
     async addToFavorite() {
-      const recipe = { recipeId: this.$route.params.recipeId };
+      // const recipe = { recipeId: this.$route.params.recipeId };
       let response;
 
       try {
         response = await this.axios.post(
           this.$root.store.server_domain + "/user/favorites",
           {
-            rec_id: recipe.recipeId,
+            rec_id: this.recipe.recipeId,
             withCredentials: true,
           }
         );

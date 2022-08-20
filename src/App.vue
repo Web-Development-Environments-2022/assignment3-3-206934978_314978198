@@ -1,10 +1,11 @@
+
 <template>
   <div id="app">
     <!-- <NavigationBar :logout="Logout"></NavigationBar> -->
 
     <!-- https://bootstrap-vue.org/docs/components/navbar#color-schemes -->
 
-    <b-navbar class="navbar navbar-light" style="background-color: lightblue">
+    <b-navbar>
       <b-navbar-nav>
         <b-nav-item href="#">
           <router-link :to="{ name: 'main' }">Main</router-link>
@@ -12,7 +13,11 @@
         <b-nav-item>
           <router-link :to="{ name: 'search' }">Search</router-link>
         </b-nav-item>
-        <b-nav-item> About </b-nav-item>
+         <b-nav-item href="#">
+          <router-link :to="{ name: 'about' }">
+          About
+          </router-link>
+        </b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav v-if="$root.store.username" id="loggedInUser">
@@ -27,7 +32,9 @@
           <b-dropdown-item id="myRecipes">
             <router-link :to="{ name: 'myrecipes' }">My Recipes</router-link>
           </b-dropdown-item>
-          <b-dropdown-item></b-dropdown-item>
+          <b-dropdown-item>
+            <router-link :to="{ name: 'myfamilyrecipes' }">My Family Recipes</router-link>
+          </b-dropdown-item>
         </b-nav-item-dropdown>
 
         <b-nav-item>
@@ -88,12 +95,13 @@ export default {
 @import "@/scss/form-style.scss";
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Cursive,  Fantasy;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: DarkSeaGreen;
   color: #2c3e50;
   min-height: 100vh;
   background-image: url("/assets/appBackground.png");
+  background: #FFE7E0;
 }
 
 #nav {
@@ -105,7 +113,19 @@ export default {
   color: #2c3e50;
 }
 
+.navbar a {
+  font-weight: bold;
+  font-size: 22px;
+  background-color: DarkSeaGreen;
+}
+
+.navbar a :hover {
+  background: #dddddd;
+  color: #333333;
+}
+
 #nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+

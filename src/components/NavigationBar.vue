@@ -16,15 +16,22 @@
         <b-nav-item v-b-modal.add-recipe-modal> Create New Recipe </b-nav-item>
         <NewRecipeModal />
         <b-nav-item-dropdown type="dark" variant="light" text="Personal">
+
           <b-dropdown-item href="#" id="favorites">
             <router-link :to="{ name: 'myfavoriterecipes' }">
               My Favorite Recipes
             </router-link>
           </b-dropdown-item>
+
           <b-dropdown-item id="myRecipes">
-            <router-link :to="{ name: 'myrecipes' }">My Recipes</router-link>
+            <router-link :to="{ name: 'myrecipes' }">
+            My Recipes
+            </router-link>
           </b-dropdown-item>
-          <b-dropdown-item></b-dropdown-item>
+
+          <b-dropdown-item>
+            <router-link :to="{ name: 'myfamilyrecipes' }">My Family Recipes</router-link>
+          </b-dropdown-item>
         </b-nav-item-dropdown>
 
         <b-nav-item>
