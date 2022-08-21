@@ -1,10 +1,18 @@
 
 <template>
-  <div id="app">
+  <div
+    id="app"
+
+    :style="{
+      'background': 'url(' + require('./assets/backgroundperfect.png') + ')',
+      'background-size': 'cover !important',
+      'display': 'block'
+    }"
+  >
     <!-- <NavigationBar :logout="Logout"></NavigationBar> -->
 
     <!-- https://bootstrap-vue.org/docs/components/navbar#color-schemes -->
-
+    <!-- <link rel="stylesheet" href='/static/back.css'><link/> -->
     <b-navbar>
       <b-navbar-nav>
         <b-nav-item href="#">
@@ -21,8 +29,12 @@
       </b-navbar-nav>
 
       <b-navbar-nav v-if="$root.store.username" id="loggedInUser">
-        <b-nav-item v-b-modal.add-recipe-modal> Create New Recipe </b-nav-item>
+
+        <b-nav-item v-b-modal.add-recipe-modal>
+          Create New Recipe
+        </b-nav-item>
         <NewRecipeModal />
+
         <b-nav-item-dropdown type="dark" variant="light" text="Personal">
           <b-dropdown-item href="#" id="favorites">
             <router-link :to="{ name: 'myfavoriterecipes' }">
@@ -100,23 +112,36 @@ export default {
   -moz-osx-font-smoothing: DarkSeaGreen;
   color: #2c3e50;
   min-height: 100vh;
-  background-image: url("/assets/appBackground.png");
   background: #FFE7E0;
 }
 
 #nav {
-  padding: 30px;
+  padding: 50px;
+  margin-left: 100px;
 }
 
 #nav a {
   font-weight: bold;
   color: #2c3e50;
+  margin-left: 600px;
+  padding: 50px;
+}
+
+.navbar {
+  margin-left: 30px;
+  margin-bottom: 50px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index:1;
 }
 
 .navbar a {
   font-weight: bold;
-  font-size: 22px;
+  font-size: 25px;
   background-color: DarkSeaGreen;
+  text-align: center;
+  padding: 10px 120px;
 }
 
 .navbar a :hover {
