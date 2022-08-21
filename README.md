@@ -28,6 +28,9 @@ By this project we ([`Yuval Cohen`](https://github.com/yuval5210), [`Noa Magriss
 ![This is an image](https://github.com/Web-Development-Environments-2022/assignment3-3-206934978_314978198/blob/master/src/assets/RegistePage.jpeg)
 
 
+### If you login, instead of seeing the option for login, you will see the 3 last recipes you viewed.
+![This is an image](https://github.com/Web-Development-Environments-2022/assignment3-3-206934978_314978198/blob/master/src/assets/WhenULogIn.JPG)
+
 
 ### Here you can search recipes by different criteria as you can see, and define how many recipes you want to get by your search. Pay attantion if you have any allergy!
 
