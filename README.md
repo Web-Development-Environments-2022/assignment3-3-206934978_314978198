@@ -43,4 +43,8 @@ By this project we ([`Yuval Cohen`](https://github.com/yuval5210), [`Noa Magriss
 ![This is an image](https://github.com/Web-Development-Environments-2022/assignment3-3-206934978_314978198/blob/master/src/assets/MyFavorite.JPG)
 
 
+#### But what if you want to create a new recipe? This is the way -
+
+![This is an image](https://github.com/Web-Development-Environments-2022/assignment3-3-206934978_314978198/blob/master/src/assets/CreateNewRecipe.jpeg)
+
 ## We hope you will enjoy our Website! :)
