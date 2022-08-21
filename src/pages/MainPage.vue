@@ -1,40 +1,48 @@
 <template>
   <!-- @submit.prevent="onRandonRecipes" -->
-  <div class="container">
+  
+  <div class="general">
     <h1 class="title">Main Page</h1>
-    <div class="right-div">
-      <RecipePreviewList
-        title="Explore This Recipes"
-        :log_in="Boolean($root.store.username)"
-        class="RandomRecipes center"
-      />
-      <!-- <button type="submit" class="btn btn-dark" @click="onRandomRecipes">
-        More Recipes
-      </button> -->
-    </div>
+    <br/>
+  
+    <div class="row_container">
+    
+      <div class="column1">
+        
+        <RecipePreviewList
+          title="Explore This Recipes"
+          :log_in="Boolean($root.store.username)"
+          class="RandomRecipes center"
+        />
+        <!-- <button type="submit" class="btn btn-dark" @click="onRandomRecipes">
+          More Recipes
+        </button> -->
+      </div>
 
-    <div class="left-div">
-      <RecipePreviewList
-        v-if="$root.store.username"
-        title="Last Viewed Recipes"
-        :log_in="Boolean($root.store.username)"
-        :class="{
-          RandomRecipes: true,
-          center: true,
-        }"
-        disabled
-      ></RecipePreviewList>
-      <LogInMainPage v-else></LogInMainPage>
-    </div>
+      <div class="column2">
+      <br/>
+        <RecipePreviewList
+          v-if="$root.store.username"
+          title="Last Viewed Recipes"
+          :log_in="Boolean($root.store.username)"
+          :class="{
+            RandomRecipes: true,
+            center: true,
+          }"
+          disabled
+        ></RecipePreviewList>
+        <LogInMainPage v-else></LogInMainPage>
+      </div>
 
-    <div
-      style="
-        position: absolute;
-        top: 70%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      "
-    ></div>
+      <div
+        style="
+          position: absolute;
+          top: 70%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        "
+      ></div>
+    </div>
   </div>
 </template>
 
@@ -69,22 +77,27 @@ export default {
 //   display: inline;
 // }
 
-.right-div {
-  float: right;
-}
 
-.left-div {
-  float: left;
+.title {
+  margin-top: 10px;
+  text-size-adjust: 20px;
+  margin-left: 800px;
+  font-size: 70px;
+  color:darkgreen;
 }
 .RandomRecipes {
-  margin: 10px 0 10px;
+  margin: 30px 0 30px;
 }
 .blur {
-  -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
+  -webkit-filter: blur(20px);
   filter: blur(2px);
 }
-::v-deep .blur .recipe-preview {
-  pointer-events: none;
-  cursor: default;
+
+.row_container {
+  display: flex;
+  margin-left: 450px;
+}
+.column1 {
+  right: 0
 }
 </style>
